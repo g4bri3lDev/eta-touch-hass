@@ -1,0 +1,46 @@
+# Tooling config only. Home Assistant loads custom_components/eta_touch from disk.
+[project]
+name = "eta-touch-hass"
+version = "0.0.0"
+requires-python = ">=3.14.2"
+# Mirrors manifest.json "requirements" (unpinned while pyetatouch comes from the local path).
+dependencies = ["pyetatouch", "getmac==0.9.5"]
+
+[dependency-groups]
+# PHCC pins the Home Assistant version under test: 0.13.365 -> homeassistant 2026.9.2
+dev = [
+    "pytest-homeassistant-custom-component==0.13.365",
+    "ruff==0.15.17",
+]
+
+[tool.uv]
+package = false
+
+# TEMPORARY until pyetatouch 0.1.0 is published: resolve it from the local checkout.
+# Then replace with the PyPI pin and remove this table.
+[tool.uv.sources]
+pyetatouch = { path = "../../../pyetatouch", editable = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+norecursedirs = [".git", ".venv", "config"]
+addopts = "--cov=custom_components.eta_touch --cov-report=term-missing"
+
+[tool.ruff]
+target-version = "py314"
+exclude = [".venv", "config"]
+
+[tool.ruff.lint]
+select = ["ASYNC", "B", "C4", "D", "E", "F", "FLY", "G", "I", "ISC", "LOG", "PGH", "PIE", "PT", "RET", "RSE", "RUF", "SIM", "SLOT", "T20", "TID", "TRY", "UP", "W"]
+ignore = ["D202", "D203", "D213", "D406", "D407", "E501", "TRY003", "TRY300", "TRY400"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components", "tests"]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["T20"]
+"tests/*" = ["D1"]
