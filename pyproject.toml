@@ -17,7 +17,8 @@ dev = [
 package = false
 
 # TEMPORARY until pyetatouch 0.1.0 is published: resolve it from the local checkout.
-# Then replace with the PyPI pin and remove this table.
+# Mirrors the file:// requirement in custom_components/eta_touch/manifest.json.
+# Before releasing, set the manifest to "pyetatouch==0.1.0" and remove this table.
 [tool.uv.sources]
 pyetatouch = { path = "../../../pyetatouch", editable = true }
 
