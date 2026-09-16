@@ -8,8 +8,13 @@
       "include-component-in-tag": false,
       "bump-minor-pre-major": true,
       "extra-files": [
-        { "type": "json", "path": "custom_components/eta_touch/manifest.json", "jsonpath": "$.version" }
-      ]
+        {
+          "type": "json",
+          "path": "custom_components/eta_touch/manifest.json",
+          "jsonpath": "$.version"
+        }
+      ],
+      "initial-version": "0.1.0"
     }
   }
 }
