@@ -14,10 +14,8 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlowWithReload,
 )
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import section
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import format_mac
 from homeassistant.helpers.selector import (
@@ -39,10 +37,8 @@ from pyetatouch import (
 import voluptuous as vol
 
 from .const import (
-    CONF_ADVANCED,
     CONF_INSTALLATION,
     CONF_SCAN_INTERVAL,
-    DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_SCAN_INTERVAL,
@@ -55,15 +51,7 @@ TITLE = "ETAtouch"
 
 
 def _connection_schema() -> vol.Schema:
-    return vol.Schema(
-        {
-            vol.Required(CONF_HOST): str,
-            vol.Required(CONF_ADVANCED): section(
-                vol.Schema({vol.Required(CONF_PORT, default=DEFAULT_PORT): cv.port}),
-                {"collapsed": True},
-            ),
-        }
-    )
+    return vol.Schema({vol.Required(CONF_HOST): str})
 
 
 class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -74,7 +62,6 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         """Initialise the flow."""
         self._host = ""
-        self._port = DEFAULT_PORT
         self._client: EtaClient | None = None
         self._installation: Installation | None = None
         self._discovery_task: asyncio.Task[Installation] | None = None
@@ -85,8 +72,8 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
         """Return the options flow."""
         return EtaTouchOptionsFlow()
 
-    async def _async_validate(self, host: str, port: int) -> dict[str, str]:
-        client = EtaClient(async_get_clientsession(self.hass), host, port)
+    async def _async_validate(self, host: str) -> dict[str, str]:
+        client = EtaClient(async_get_clientsession(self.hass), host)
         try:
             await client.check_api()
         except EtaWebserviceUnavailableError:
@@ -100,7 +87,7 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
         except EtaError:
             _LOGGER.exception("Unexpected error validating %s", host)
             return {"base": "unknown"}
-        self._host, self._port, self._client = host, port, client
+        self._host, self._client = host, client
         return {}
 
     async def _async_mac(self, host: str) -> str | None:
@@ -116,15 +103,12 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_HOST]
-            port = user_input[CONF_ADVANCED][CONF_PORT]
             self._async_abort_entries_match({CONF_HOST: host})
-            errors = await self._async_validate(host, port)
+            errors = await self._async_validate(host)
             if not errors:
                 if mac := await self._async_mac(host):
                     await self.async_set_unique_id(mac)
-                    self._abort_if_unique_id_configured(
-                        updates={CONF_HOST: host, CONF_PORT: port}
-                    )
+                    self._abort_if_unique_id_configured(updates={CONF_HOST: host})
                 return await self.async_step_discover()
         return self.async_show_form(
             step_id="user",
@@ -148,7 +132,7 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
             ):
                 self.hass.config_entries.async_update_entry(entry, unique_id=mac)
                 return self.async_abort(reason="already_configured")
-        if await self._async_validate(discovery_info.ip, DEFAULT_PORT):
+        if await self._async_validate(discovery_info.ip):
             return self.async_abort(reason="not_eta_device")
         self.context["title_placeholders"] = {"host": discovery_info.ip}
         return await self.async_step_discovery_confirm()
@@ -207,7 +191,6 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
             title=TITLE,
             data={
                 CONF_HOST: self._host,
-                CONF_PORT: self._port,
                 CONF_INSTALLATION: installation.to_dict(),
             },
         )
@@ -220,19 +203,15 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_HOST]
-            port = user_input[CONF_ADVANCED][CONF_PORT]
-            errors = await self._async_validate(host, port)
+            errors = await self._async_validate(host)
             if not errors:
                 mac = await self._async_mac(host)
                 if mac and entry.unique_id and mac != entry.unique_id:
                     return self.async_abort(reason="wrong_device")
                 return self.async_update_reload_and_abort(
-                    entry, data_updates={CONF_HOST: host, CONF_PORT: port}
+                    entry, data_updates={CONF_HOST: host}
                 )
-        suggested = user_input or {
-            CONF_HOST: entry.data[CONF_HOST],
-            CONF_ADVANCED: {CONF_PORT: entry.data[CONF_PORT]},
-        }
+        suggested = user_input or {CONF_HOST: entry.data[CONF_HOST]}
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=self.add_suggested_values_to_schema(

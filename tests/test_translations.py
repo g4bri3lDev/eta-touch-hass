@@ -13,6 +13,7 @@ PLATFORM_FOR_KIND = {
     Kind.SETTING: "number",
     Kind.SWITCH: "switch",
     Kind.SELECT: "select",
+    Kind.ACTION: "button",
 }
 
 
@@ -46,3 +47,4 @@ def test_catalog_keys_are_covered() -> None:
     assert "problem" in entity["binary_sensor"]
     assert "active_errors" in entity["sensor"]
     assert "rediscover" in entity["button"]
+    assert set(entity["select"]["mode"]["state"]) == {"auto", "heat", "setback"}

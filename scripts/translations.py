@@ -72,8 +72,8 @@ NAMES: dict[str, tuple[str, str]] = {
     "operating_mode": ("Operating mode", "Betrieb"),
     "heating_circuit_pump": ("Pump", "Pumpe"),
     "curve_offset": ("Heating curve offset", "Schieberposition"),
-    "flow_at_minus_10": ("Flow at -10 °C", "Vorlauf bei -10 °C"),
-    "flow_at_plus_10": ("Flow at +10 °C", "Vorlauf bei +10 °C"),
+    "flow_at_minus_10": ("Flow at minus 10 °C", "Vorlauf bei minus 10 °C"),
+    "flow_at_plus_10": ("Flow at plus 10 °C", "Vorlauf bei plus 10 °C"),
     "setback_reduction": ("Setback reduction", "Vorlauf-Absenkung"),
     "heating_limit_day": ("Heating limit (heating)", "Heizgrenze Heizen"),
     "heating_limit_night": ("Heating limit (setback)", "Heizgrenze Absenken"),
@@ -121,6 +121,7 @@ FIXED: dict[str, dict[str, tuple[str, str]]] = {
     "binary_sensor": {"problem": ("Problem", "Problem")},
     "sensor": {"active_errors": ("Active errors", "Aktive Störungen")},
     "button": {"rediscover": ("Rediscover", "Neu erkennen")},
+    "select": {"mode": ("Mode", "Betriebsart")},
 }
 
 WEBSERVICE_HELP = (
@@ -139,12 +140,8 @@ TEXTS: dict[str, tuple[str, str]] = {
         "IP address or hostname of the ETAtouch panel.",
         "IP-Adresse oder Hostname des ETAtouch-Displays.",
     ),
-    "config.step.user.sections.advanced.name": ("Advanced", "Erweitert"),
-    "config.step.user.sections.advanced.data.port": ("Port", "Port"),
     "config.step.reconfigure.title": ("Change connection", "Verbindung ändern"),
     "config.step.reconfigure.data.host": ("Host", "Host"),
-    "config.step.reconfigure.sections.advanced.name": ("Advanced", "Erweitert"),
-    "config.step.reconfigure.sections.advanced.data.port": ("Port", "Port"),
     "config.step.discovery_confirm.title": ("ETA heater found", "ETA-Heizung gefunden"),
     "config.step.discovery_confirm.description": (
         "Set up the ETA heater at {host}?",
@@ -237,6 +234,13 @@ PLATFORM_FOR_KIND = {
     Kind.SETTING: "number",
     Kind.SWITCH: "switch",
     Kind.SELECT: "select",
+    Kind.ACTION: "button",
+}
+
+MODE_STATES: dict[str, tuple[str, str]] = {
+    "auto": ("Automatic", "Automatik"),
+    "heat": ("Heating", "Heizen"),
+    "setback": ("Setback", "Absenken"),
 }
 
 
@@ -261,6 +265,9 @@ def build(lang: int) -> dict[str, Any]:
     for platform, names in FIXED.items():
         for key, texts in names.items():
             entity.setdefault(platform, {})[key] = {"name": texts[lang]}
+    entity["select"]["mode"]["state"] = {
+        key: texts[lang] for key, texts in MODE_STATES.items()
+    }
     return tree
 
 

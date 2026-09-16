@@ -4,14 +4,14 @@ from collections.abc import Generator, Iterable
 from types import TracebackType
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST
 from pyetatouch import MenuFub, VarAddress, VarValue
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.eta_touch.const import CONF_INSTALLATION, DOMAIN
 
-from . import HOST, INSTALLATION, MAC, PORT, TITLE, VALUES
+from . import HOST, INSTALLATION, MAC, TITLE, VALUES
 
 
 @pytest.fixture(autouse=True)
@@ -129,7 +129,6 @@ def config_entry() -> MockConfigEntry:
         unique_id=MAC,
         data={
             CONF_HOST: HOST,
-            CONF_PORT: PORT,
             CONF_INSTALLATION: INSTALLATION.to_dict(),
         },
     )

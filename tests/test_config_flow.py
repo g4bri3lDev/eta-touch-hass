@@ -4,7 +4,7 @@ import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.config_entries import SOURCE_DHCP, SOURCE_USER
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult, FlowResultType
 from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
@@ -20,15 +20,14 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.eta_touch.const import (
-    CONF_ADVANCED,
     CONF_INSTALLATION,
     CONF_SCAN_INTERVAL,
     DOMAIN,
 )
 
-from . import COMPONENTS, HOST, INSTALLATION, MAC, PORT, TITLE
+from . import COMPONENTS, HOST, INSTALLATION, MAC, TITLE
 
-USER_INPUT = {CONF_HOST: HOST, CONF_ADVANCED: {CONF_PORT: PORT}}
+USER_INPUT = {CONF_HOST: HOST}
 DHCP = DhcpServiceInfo(ip=HOST, hostname="eta", macaddress="002496aabbcc")
 pytestmark = pytest.mark.usefixtures("mock_setup_entry")
 
@@ -58,7 +57,6 @@ async def test_user_flow(hass: HomeAssistant) -> None:
     assert result["title"] == TITLE
     assert result["data"] == {
         CONF_HOST: HOST,
-        CONF_PORT: PORT,
         CONF_INSTALLATION: INSTALLATION.to_dict(),
     }
     assert result["result"].unique_id == MAC
@@ -135,9 +133,7 @@ async def test_user_flow_same_mac_updates_host(
     hass: HomeAssistant, config_entry: MockConfigEntry
 ) -> None:
     config_entry.add_to_hass(hass)
-    result = await _user(
-        hass, {CONF_HOST: "192.0.2.20", CONF_ADVANCED: {CONF_PORT: PORT}}
-    )
+    result = await _user(hass, {CONF_HOST: "192.0.2.20"})
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "already_configured"
     assert config_entry.data[CONF_HOST] == "192.0.2.20"
@@ -180,7 +176,6 @@ async def test_dhcp_updates_host(hass: HomeAssistant) -> None:
         unique_id=MAC,
         data={
             CONF_HOST: "192.0.2.99",
-            CONF_PORT: PORT,
             CONF_INSTALLATION: INSTALLATION.to_dict(),
         },
     )
@@ -200,7 +195,6 @@ async def test_dhcp_attaches_mac_to_manual_entry(hass: HomeAssistant) -> None:
         unique_id=None,
         data={
             CONF_HOST: HOST,
-            CONF_PORT: PORT,
             CONF_INSTALLATION: INSTALLATION.to_dict(),
         },
     )
@@ -228,12 +222,11 @@ async def test_reconfigure(hass: HomeAssistant, config_entry: MockConfigEntry) -
     result = await config_entry.start_reconfigure_flow(hass)
     assert result["type"] is FlowResultType.FORM
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {CONF_HOST: "192.0.2.20", CONF_ADVANCED: {CONF_PORT: 8081}}
+        result["flow_id"], {CONF_HOST: "192.0.2.20"}
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "reconfigure_successful"
     assert config_entry.data[CONF_HOST] == "192.0.2.20"
-    assert config_entry.data[CONF_PORT] == 8081
 
 
 @pytest.mark.usefixtures("mock_client")

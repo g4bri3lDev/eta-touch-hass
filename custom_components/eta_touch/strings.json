@@ -28,14 +28,6 @@
         "data": {
           "host": "Host"
         },
-        "sections": {
-          "advanced": {
-            "data": {
-              "port": "Port"
-            },
-            "name": "Advanced"
-          }
-        },
         "title": "Change connection"
       },
       "user": {
@@ -44,14 +36,6 @@
         },
         "data_description": {
           "host": "IP address or hostname of the ETAtouch panel."
-        },
-        "sections": {
-          "advanced": {
-            "data": {
-              "port": "Port"
-            },
-            "name": "Advanced"
-          }
         },
         "title": "Connect to ETA heater"
       }
@@ -64,6 +48,15 @@
       }
     },
     "button": {
+      "come_button": {
+        "name": "Coming home"
+      },
+      "fill_pellet_container": {
+        "name": "Fill pellet container"
+      },
+      "go_button": {
+        "name": "Leaving home"
+      },
       "rediscover": {
         "name": "Rediscover"
       }
@@ -79,10 +72,10 @@
         "name": "Empty ash box after"
       },
       "flow_at_minus_10": {
-        "name": "Flow at -10 °C"
+        "name": "Flow at minus 10 °C"
       },
       "flow_at_plus_10": {
-        "name": "Flow at +10 °C"
+        "name": "Flow at plus 10 °C"
       },
       "heating_limit_day": {
         "name": "Heating limit (heating)"
@@ -104,6 +97,14 @@
       }
     },
     "select": {
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "auto": "Automatic",
+          "heat": "Heating",
+          "setback": "Setback"
+        }
+      },
       "priority": {
         "name": "Priority"
       }
@@ -203,10 +204,10 @@
         "name": "Fill pellet container"
       },
       "flow_at_minus_10": {
-        "name": "Flow at -10 °C"
+        "name": "Flow at minus 10 °C"
       },
       "flow_at_plus_10": {
-        "name": "Flow at +10 °C"
+        "name": "Flow at plus 10 °C"
       },
       "flow_temperature": {
         "name": "Flow temperature"
@@ -333,32 +334,14 @@
       }
     },
     "switch": {
-      "auto_button": {
-        "name": "Automatic mode"
-      },
       "buffer_charge_now": {
         "name": "Charge now"
-      },
-      "come_button": {
-        "name": "Coming home"
-      },
-      "fill_pellet_container": {
-        "name": "Fill pellet container"
-      },
-      "go_button": {
-        "name": "Leaving home"
-      },
-      "heat_button": {
-        "name": "Heating mode"
       },
       "hot_water_charge_now": {
         "name": "Charge hot water now"
       },
       "power": {
         "name": "Power"
-      },
-      "setback_button": {
-        "name": "Setback mode"
       }
     }
   },

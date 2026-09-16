@@ -15,6 +15,11 @@ async def varset_name(hass: HomeAssistant, scope: str) -> str:
     return f"ha{hashlib.sha256(seed.encode()).hexdigest()[:10]}"
 
 
+def mode_unique_id(entry_id: str, node: int, fub: int) -> str:
+    """Return the unique ID of a function block's mode select."""
+    return f"{entry_id}_{node}_{fub}_mode"
+
+
 def variable_unique_id(entry_id: str, address: VarAddress) -> str:
     """Return the entity unique ID for a variable address."""
     return f"{entry_id}_{address.node}_{address.fub}_{address.fkt}_{address.io}_{address.var}"

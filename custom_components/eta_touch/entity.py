@@ -10,9 +10,11 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from pyetatouch import (
     Component,
     ComponentType,
+    EtaClient,
     EtaError,
     Kind,
     MatchedVariable,
+    VarAddress,
     VarValue,
     enabled_by_default,
     get_entry,
@@ -21,7 +23,7 @@ from pyetatouch import (
 from .const import DOMAIN, MANUFACTURER
 from .coordinator import EtaConfigEntry, EtaDataCoordinator
 from .descriptions import META
-from .helpers import variable_unique_id
+from .helpers import mode_unique_id, variable_unique_id
 
 MODELS = {
     ComponentType.BOILER: "Boiler",
@@ -66,6 +68,10 @@ def platform_for(variable: MatchedVariable) -> Platform | None:
     if catalog_entry is None:
         return None
     writable = variable.info is not None and variable.info.writable
+    if catalog_entry.kind is Kind.MODE:
+        return None  # grouped into one select per function block
+    if catalog_entry.kind is Kind.ACTION:
+        return Platform.BUTTON if writable else None
     if writable and catalog_entry.kind is Kind.SWITCH:
         return Platform.SWITCH
     if writable and catalog_entry.kind is Kind.SELECT:
@@ -73,6 +79,36 @@ def platform_for(variable: MatchedVariable) -> Platform | None:
     if writable and catalog_entry.kind is Kind.SETTING:
         return Platform.NUMBER
     return Platform.SENSOR
+
+
+def representing_unique_id(
+    entry_id: str, component: Component, variable: MatchedVariable
+) -> str | None:
+    """Return the unique ID of the entity that shows a variable (None if not polled)."""
+    catalog_entry = get_entry(variable.key)
+    if catalog_entry is None or catalog_entry.kind is Kind.ACTION:
+        return None
+    if catalog_entry.kind is Kind.MODE:
+        return mode_unique_id(entry_id, component.node, component.fub)
+    return variable_unique_id(entry_id, variable.address)
+
+
+async def async_write(
+    client: EtaClient,
+    coordinator: EtaDataCoordinator,
+    address: VarAddress,
+    value: float | str,
+) -> None:
+    """Write a value and refresh, translating library errors."""
+    try:
+        await client.write(address, value)
+    except EtaError as err:
+        raise HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="write_failed",
+            translation_placeholders={"error": str(err)},
+        ) from err
+    await coordinator.async_request_refresh()
 
 
 def variables_for_platform(
@@ -125,12 +161,4 @@ class EtaEntity(CoordinatorEntity[EtaDataCoordinator]):
         return super().available and self.raw_value is not None
 
     async def _async_write(self, value: float | str) -> None:
-        try:
-            await self._client.write(self.variable.address, value)
-        except EtaError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="write_failed",
-                translation_placeholders={"error": str(err)},
-            ) from err
-        await self.coordinator.async_request_refresh()
+        await async_write(self._client, self.coordinator, self.variable.address, value)

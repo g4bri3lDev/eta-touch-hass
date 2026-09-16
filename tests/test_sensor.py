@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE
+from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er, issue_registry as ir
 from pyetatouch import EtaFault, EtaWebserviceUnavailableError
@@ -80,6 +80,11 @@ async def test_disabled_by_default(
         entry = registry.async_get(entity_id_for(hass, "sensor", config_entry, address))
         assert entry is not None
         assert entry.disabled_by is er.RegistryEntryDisabler.INTEGRATION
+    read_only_setting = registry.async_get(
+        entity_id_for(hass, "sensor", config_entry, HK_FLOW_MINUS)
+    )
+    assert read_only_setting is not None
+    assert read_only_setting.entity_category is EntityCategory.DIAGNOSTIC
 
 
 async def test_unavailable_raises_issue_and_recovers(

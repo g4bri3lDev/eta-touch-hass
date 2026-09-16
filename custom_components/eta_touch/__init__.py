@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from contextlib import AsyncExitStack, suppress
 
-from homeassistant.const import CONF_HOST, CONF_PORT, Platform
+from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -25,8 +25,8 @@ from .coordinator import (
     EtaErrorsCoordinator,
     EtaRuntimeData,
 )
-from .entity import controller_device_info
-from .helpers import variable_unique_id, varset_name
+from .entity import controller_device_info, representing_unique_id
+from .helpers import varset_name
 
 PLATFORMS = [
     Platform.BINARY_SENSOR,
@@ -51,16 +51,14 @@ def _enabled_addresses(
     addresses: list[VarAddress] = []
     for component in installation.components:
         for variable in installation.variables_for(component):
-            registry_entry = known.get(
-                variable_unique_id(entry.entry_id, variable.address)
-            )
-            if registry_entry is not None:
+            unique_id = representing_unique_id(entry.entry_id, component, variable)
+            catalog_entry = get_entry(variable.key)
+            if unique_id is None or catalog_entry is None:
+                continue
+            if (registry_entry := known.get(unique_id)) is not None:
                 enabled = registry_entry.disabled_by is None
             else:
-                catalog_entry = get_entry(variable.key)
-                enabled = catalog_entry is not None and enabled_by_default(
-                    catalog_entry, component.type
-                )
+                enabled = enabled_by_default(catalog_entry, component.type)
             if enabled:
                 addresses.append(variable.address)
     return addresses
@@ -73,9 +71,7 @@ async def _close(stack: AsyncExitStack) -> None:
 
 async def async_setup_entry(hass: HomeAssistant, entry: EtaConfigEntry) -> bool:
     """Set up ETA touch from a config entry."""
-    client = EtaClient(
-        async_get_clientsession(hass), entry.data[CONF_HOST], entry.data[CONF_PORT]
-    )
+    client = EtaClient(async_get_clientsession(hass), entry.data[CONF_HOST])
     installation = Installation.from_dict(entry.data[CONF_INSTALLATION])
     controller = dr.async_get(hass).async_get_or_create(
         config_entry_id=entry.entry_id, **controller_device_info(entry)

@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import Platform
+from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -43,6 +43,9 @@ class EtaSensor(EtaEntity, SensorEntity):
     ) -> None:
         """Initialise the sensor."""
         super().__init__(entry, component, variable)
+        if self.meta.config:
+            # Sensors may not use the config category; read-only settings are diagnostics.
+            self._attr_entity_category = EntityCategory.DIAGNOSTIC
         if self.info is not None and self.info.options:
             self._attr_device_class = SensorDeviceClass.ENUM
             self._attr_options = list(dict.fromkeys(self.info.options.values()))

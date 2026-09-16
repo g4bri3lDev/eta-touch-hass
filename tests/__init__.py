@@ -17,7 +17,6 @@ from custom_components.eta_touch.const import DOMAIN
 from custom_components.eta_touch.helpers import variable_unique_id
 
 HOST = "192.0.2.10"
-PORT = 8080
 MAC = "00:24:96:aa:bb:cc"
 TITLE = "ETAtouch"
 
@@ -34,6 +33,10 @@ WW_TARGET = VarAddress.parse("120/10111/0/0/12132")
 WW_PRIORITY = VarAddress.parse("120/10111/0/0/12770")
 WW_TEMP = VarAddress.parse("120/10111/0/11129/0")
 FWM_OUTDOOR = VarAddress.parse("120/10999/0/0/12197")
+HK_AUTO = VarAddress.parse("120/10101/0/0/12126")
+HK_HEAT = VarAddress.parse("120/10101/0/0/12125")
+HK_SETBACK = VarAddress.parse("120/10101/0/0/12230")
+HK_COME = VarAddress.parse("120/10101/0/0/12218")
 
 STATES = {4000: "Ausgeschaltet", 4001: "Bereit"}
 ON_OFF = {1802: "Aus", 1803: "Ein"}
@@ -49,6 +52,9 @@ ENABLED_BY_DEFAULT = {
     HK_OFFSET,
     WW_TARGET,
     WW_TEMP,
+    HK_AUTO,
+    HK_HEAT,
+    HK_SETBACK,
 }
 
 
@@ -153,6 +159,26 @@ INSTALLATION = Installation(
         ),
         MatchedVariable("hot_water_temperature", WW_TEMP, None),
         MatchedVariable("outdoor_temperature", FWM_OUTDOOR, None),
+        MatchedVariable(
+            "auto_button",
+            HK_AUTO,
+            info(HK_AUTO, "Auto Taste", writable=True, options=ON_OFF),
+        ),
+        MatchedVariable(
+            "heat_button",
+            HK_HEAT,
+            info(HK_HEAT, "Heizen Taste", writable=True, options=ON_OFF),
+        ),
+        MatchedVariable(
+            "setback_button",
+            HK_SETBACK,
+            info(HK_SETBACK, "Absenken Taste", writable=True, options=ON_OFF),
+        ),
+        MatchedVariable(
+            "come_button",
+            HK_COME,
+            info(HK_COME, "Kommen Taste", writable=True, options=ON_OFF),
+        ),
     ),
 )
 
@@ -170,6 +196,10 @@ VALUES = {
     WW_PRIORITY: value(WW_PRIORITY, 1973.0, "xxx", offset=1971),
     WW_TEMP: value(WW_TEMP, 442.0, "44", "°C", 10),
     FWM_OUTDOOR: value(FWM_OUTDOOR, 125.0, "12,5", "°C", 10),
+    HK_AUTO: value(HK_AUTO, 1803.0, "Ein", offset=1802),
+    HK_HEAT: value(HK_HEAT, 1802.0, "Aus", offset=1802),
+    HK_SETBACK: value(HK_SETBACK, 1802.0, "Aus", offset=1802),
+    HK_COME: value(HK_COME, 1802.0, "Aus", offset=1802),
 }
 
 

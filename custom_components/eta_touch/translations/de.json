@@ -28,14 +28,6 @@
         "data": {
           "host": "Host"
         },
-        "sections": {
-          "advanced": {
-            "data": {
-              "port": "Port"
-            },
-            "name": "Erweitert"
-          }
-        },
         "title": "Verbindung ändern"
       },
       "user": {
@@ -44,14 +36,6 @@
         },
         "data_description": {
           "host": "IP-Adresse oder Hostname des ETAtouch-Displays."
-        },
-        "sections": {
-          "advanced": {
-            "data": {
-              "port": "Port"
-            },
-            "name": "Erweitert"
-          }
         },
         "title": "Mit ETA-Heizung verbinden"
       }
@@ -64,6 +48,15 @@
       }
     },
     "button": {
+      "come_button": {
+        "name": "Kommen"
+      },
+      "fill_pellet_container": {
+        "name": "Pelletsbehälter auffüllen"
+      },
+      "go_button": {
+        "name": "Gehen"
+      },
       "rediscover": {
         "name": "Neu erkennen"
       }
@@ -79,10 +72,10 @@
         "name": "Aschebox leeren nach"
       },
       "flow_at_minus_10": {
-        "name": "Vorlauf bei -10 °C"
+        "name": "Vorlauf bei minus 10 °C"
       },
       "flow_at_plus_10": {
-        "name": "Vorlauf bei +10 °C"
+        "name": "Vorlauf bei plus 10 °C"
       },
       "heating_limit_day": {
         "name": "Heizgrenze Heizen"
@@ -104,6 +97,14 @@
       }
     },
     "select": {
+      "mode": {
+        "name": "Betriebsart",
+        "state": {
+          "auto": "Automatik",
+          "heat": "Heizen",
+          "setback": "Absenken"
+        }
+      },
       "priority": {
         "name": "Priorität"
       }
@@ -203,10 +204,10 @@
         "name": "Pelletsbehälter auffüllen"
       },
       "flow_at_minus_10": {
-        "name": "Vorlauf bei -10 °C"
+        "name": "Vorlauf bei minus 10 °C"
       },
       "flow_at_plus_10": {
-        "name": "Vorlauf bei +10 °C"
+        "name": "Vorlauf bei plus 10 °C"
       },
       "flow_temperature": {
         "name": "Vorlauftemperatur"
@@ -333,32 +334,14 @@
       }
     },
     "switch": {
-      "auto_button": {
-        "name": "Automatik"
-      },
       "buffer_charge_now": {
         "name": "Sofort laden"
-      },
-      "come_button": {
-        "name": "Kommen"
-      },
-      "fill_pellet_container": {
-        "name": "Pelletsbehälter auffüllen"
-      },
-      "go_button": {
-        "name": "Gehen"
-      },
-      "heat_button": {
-        "name": "Heizen"
       },
       "hot_water_charge_now": {
         "name": "Warmwasser sofort laden"
       },
       "power": {
         "name": "Ein/Aus"
-      },
-      "setback_button": {
-        "name": "Absenken"
       }
     }
   },
