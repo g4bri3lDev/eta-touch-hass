@@ -18,7 +18,7 @@
     "pyetatouch"
   ],
   "requirements": [
-    "pyetatouch @ file:///path/to/pyetatouch",
+    "pyetatouch==0.1.0",
     "getmac==0.9.5"
   ],
   "version": "0.0.0"

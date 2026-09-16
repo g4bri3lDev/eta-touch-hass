@@ -3,8 +3,8 @@
 name = "eta-touch-hass"
 version = "0.0.0"
 requires-python = ">=3.14.2"
-# Mirrors manifest.json "requirements" (unpinned while pyetatouch comes from the local path).
-dependencies = ["pyetatouch", "getmac==0.9.5"]
+# Mirrors manifest.json "requirements".
+dependencies = ["pyetatouch==0.1.0", "getmac==0.9.5"]
 
 [dependency-groups]
 # PHCC pins the Home Assistant version under test: 0.13.365 -> homeassistant 2026.9.2
@@ -16,11 +16,6 @@ dev = [
 [tool.uv]
 package = false
 
-# TEMPORARY until pyetatouch 0.1.0 is published: resolve it from the local checkout.
-# Mirrors the file:// requirement in custom_components/eta_touch/manifest.json.
-# Before releasing, set the manifest to "pyetatouch==0.1.0" and remove this table.
-[tool.uv.sources]
-pyetatouch = { path = "../../../pyetatouch", editable = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
