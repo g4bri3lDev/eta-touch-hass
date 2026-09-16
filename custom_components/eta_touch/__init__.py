@@ -25,7 +25,7 @@ from .coordinator import (
     EtaErrorsCoordinator,
     EtaRuntimeData,
 )
-from .entity import controller_device_info, representing_unique_ids
+from .entity import controller_device_info, expected_unique_ids, representing_unique_ids
 from .helpers import varset_name
 
 PLATFORMS = [
@@ -68,6 +68,17 @@ def _enabled_addresses(
     return addresses
 
 
+def _remove_stale_entities(
+    hass: HomeAssistant, entry: EtaConfigEntry, installation: Installation
+) -> None:
+    """Remove registry entries the current installation no longer produces."""
+    registry = er.async_get(hass)
+    expected = expected_unique_ids(entry.entry_id, installation)
+    for registry_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+        if registry_entry.unique_id not in expected:
+            registry.async_remove(registry_entry.entity_id)
+
+
 async def _close(stack: AsyncExitStack) -> None:
     with suppress(EtaError):
         await stack.aclose()
@@ -77,6 +88,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: EtaConfigEntry) -> bool:
     """Set up ETA touch from a config entry."""
     client = EtaClient(async_get_clientsession(hass), entry.data[CONF_HOST])
     installation = Installation.from_dict(entry.data[CONF_INSTALLATION])
+    _remove_stale_entities(hass, entry, installation)
     controller = dr.async_get(hass).async_get_or_create(
         config_entry_id=entry.entry_id, **controller_device_info(entry)
     )

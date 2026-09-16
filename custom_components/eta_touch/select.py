@@ -9,11 +9,9 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from pyetatouch import (
     Component,
-    Kind,
     MatchedVariable,
     VarAddress,
     code_for_state,
-    get_entry,
     state_key,
     state_keys,
     switch_codes,
@@ -21,21 +19,16 @@ from pyetatouch import (
 
 from .coordinator import EtaConfigEntry, EtaDataCoordinator
 from .entity import (
+    MODE_OPTIONS,
     EtaEntity,
     async_write,
     component_device_info,
+    mode_buttons,
     variables_for_platform,
 )
 from .helpers import mode_unique_id
 
 PARALLEL_UPDATES = 1
-
-# catalog key of a panel mode button -> option key of the mode select (in panel order)
-MODE_OPTIONS = {
-    "auto_button": "auto",
-    "heat_button": "heating",
-    "setback_button": "setback",
-}
 
 
 async def async_setup_entry(
@@ -50,16 +43,7 @@ async def async_setup_entry(
     ]
     installation = entry.runtime_data.installation
     for component in installation.components:
-        buttons = [
-            variable
-            for variable in installation.variables_for(component)
-            if (catalog_entry := get_entry(variable.key)) is not None
-            and catalog_entry.kind is Kind.MODE
-            and variable.key in MODE_OPTIONS
-            and variable.info is not None
-            and variable.info.writable
-        ]
-        if buttons:
+        if buttons := mode_buttons(installation, component):
             entities.append(EtaModeSelect(entry, component, buttons))
     async_add_entities(entities)
 

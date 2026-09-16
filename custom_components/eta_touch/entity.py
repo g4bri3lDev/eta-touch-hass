@@ -16,6 +16,7 @@ from pyetatouch import (
     ComponentType,
     EtaClient,
     EtaError,
+    Installation,
     Kind,
     MatchedVariable,
     VarAddress,
@@ -30,6 +31,14 @@ from .descriptions import META
 from .helpers import mode_unique_id, variable_unique_id
 
 ENERGY_SOURCE_KEY = "total_consumption"
+# fixed entities of the controller device (unique ID = f"{entry_id}_{suffix}")
+CONTROLLER_ENTITY_SUFFIXES = ("problem", "active_errors", "latest_error", "rediscover")
+# catalog key of a panel mode button -> option key of the mode select (in panel order)
+MODE_OPTIONS = {
+    "auto_button": "auto",
+    "heat_button": "heating",
+    "setback_button": "setback",
+}
 
 MODELS = {
     ComponentType.BOILER: "Boiler",
@@ -129,6 +138,33 @@ async def async_write(
             translation_placeholders={"error": str(err)},
         ) from err
     await coordinator.async_request_refresh()
+
+
+def mode_buttons(
+    installation: Installation, component: Component
+) -> list[MatchedVariable]:
+    """Return the writable panel mode buttons of a function block."""
+    return [
+        variable
+        for variable in installation.variables_for(component)
+        if variable.key in MODE_OPTIONS
+        and variable.info is not None
+        and variable.info.writable
+    ]
+
+
+def expected_unique_ids(entry_id: str, installation: Installation) -> set[str]:
+    """Return the unique IDs of all entities the installation produces."""
+    unique_ids = {f"{entry_id}_{suffix}" for suffix in CONTROLLER_ENTITY_SUFFIXES}
+    for component in installation.components:
+        if mode_buttons(installation, component):
+            unique_ids.add(mode_unique_id(entry_id, component.node, component.fub))
+        for variable in installation.variables_for(component):
+            if platform_for(variable) is not None:
+                unique_ids.add(variable_unique_id(entry_id, variable.address))
+            if variable.key == ENERGY_SOURCE_KEY:
+                unique_ids.add(energy_unique_id(entry_id, component))
+    return unique_ids
 
 
 def variables_for_platform(

@@ -13,6 +13,7 @@ from custom_components.eta_touch.helpers import variable_unique_id
 from . import (
     BOILER_TEMP,
     ENABLED_BY_DEFAULT,
+    HK_AUTO,
     HK_POWER,
     HOST,
     INSTALLATION,
@@ -139,3 +140,40 @@ async def test_controller_without_mac(hass: HomeAssistant, mock_client: object) 
     )
     assert controller is not None
     assert controller.connections == set()
+
+
+async def test_stale_entities_are_removed(
+    hass: HomeAssistant, config_entry: MockConfigEntry, mock_client: object
+) -> None:
+    config_entry.add_to_hass(hass)
+    registry = er.async_get(hass)
+    stale = registry.async_get_or_create(
+        "switch",
+        DOMAIN,
+        variable_unique_id(
+            config_entry.entry_id, HK_AUTO
+        ),  # old per-button mode switch
+        config_entry=config_entry,
+    )
+    kept = registry.async_get_or_create(
+        "sensor",
+        DOMAIN,
+        variable_unique_id(config_entry.entry_id, BOILER_TEMP),
+        config_entry=config_entry,
+    )
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+    assert registry.async_get(stale.entity_id) is None
+    assert registry.async_get(kept.entity_id) is not None
+    for suffix in (
+        "problem",
+        "active_errors",
+        "latest_error",
+        "rediscover",
+        "120_10101_mode",
+        "40_10021_energy",
+    ):
+        assert any(
+            e.unique_id == f"{config_entry.entry_id}_{suffix}"
+            for e in er.async_entries_for_config_entry(registry, config_entry.entry_id)
+        ), suffix
