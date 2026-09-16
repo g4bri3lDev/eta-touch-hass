@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pyetatouch import CATALOG, Kind
+from pyetatouch import CATALOG, STATE_KEYS, Kind
 
 ROOT = Path(__file__).parent.parent / "custom_components" / "eta_touch"
 
@@ -239,8 +239,62 @@ PLATFORM_FOR_KIND = {
 
 MODE_STATES: dict[str, tuple[str, str]] = {
     "auto": ("Automatic", "Automatik"),
-    "heat": ("Heating", "Heizen"),
+    "heating": ("Heating", "Heizen"),
     "setback": ("Setback", "Absenken"),
+}
+
+
+# pyetatouch STATE_KEYS values: (English, German)
+STATE_NAMES: dict[str, tuple[str, str]] = {
+    "off": ("Off", "Aus"),
+    "on": ("On", "Ein"),
+    "ready": ("Ready", "Bereit"),
+    "charged": ("Charged", "Geladen"),
+    "full": ("Full", "Voll"),
+    "deashing": ("De-ashing", "Entaschen"),
+    "changing_position": ("Changing position", "Position wechseln"),
+    "flushing": ("Flushing", "Spülen"),
+    "starting": ("Starting", "Startvorgang"),
+    "running": ("Running", "In Betrieb"),
+    "conveying": ("Conveying", "Fördern"),
+    "heating": ("Heating", "Heizen"),
+    "setback": ("Setback", "Absenken"),
+    "charging": ("Charging", "Laden"),
+    "shutting_down": ("Shutting down", "Abstellen"),
+    "ember_burnout": ("Ember burn-out", "Glutabbrand"),
+    "fault": ("Fault", "Störung"),
+    "locked": ("Locked", "Verriegelt"),
+    "ember_burnout_locked": (
+        "Ember burn-out (locked)",
+        "Glutabbrand wegen Verriegelung",
+    ),
+    "pellet_mode": ("Pellet mode", "Pelletsbetrieb"),
+    "switching_to_log_wood": (
+        "Switching to log wood",
+        "Umschaltung auf Stückholzbetrieb",
+    ),
+    "fuse_defective": ("Fuse defective", "Sicherung defekt"),
+    "no_terminal": ("No terminal assigned", "Keine Klemme zugewiesen"),
+    "terminal_unavailable": ("Terminal unavailable", "Klemme nicht verfügbar"),
+    "no": ("No", "Nein"),
+    "yes": ("Yes", "Ja"),
+    "not_full": ("Not full", "Nicht voll"),
+    "demand": ("Demand", "Bedarf"),
+    "suction": ("Suction", "Saugen"),
+    "discharge_overrun": ("Discharge overrun", "Austragung Nachlauf"),
+    "turbine_overrun": ("Suction turbine overrun", "Saugturbine Nachlauf"),
+    "overrun_standby": ("Overrun standby", "Nachlauf Standby"),
+    "standby_boiler": ("Standby (boiler)", "Standby Kessel"),
+    "standby_discharge": ("Standby (discharge)", "Standby Austragung"),
+    "discharge_error": ("Discharge error", "Austragung Fehler"),
+    "suction_time_exceeded": ("Maximum suction time exceeded", "Fehler Saugzeit Max"),
+    "vacation": ("Vacation", "Urlaub"),
+    "screed_drying": ("Screed drying", "Estrich"),
+    "error": ("Error", "Fehler"),
+    "ok": ("OK", "OK"),
+    "low": ("Low", "Niedrig"),
+    "medium": ("Medium", "Mittel"),
+    "high": ("High", "Hoch"),
 }
 
 
@@ -257,11 +311,18 @@ def build(lang: int) -> dict[str, Any]:
     for path, texts in TEXTS.items():
         _set(tree, path, texts[lang].replace("{help}", WEBSERVICE_HELP[lang]))
     entity: dict[str, Any] = tree.setdefault("entity", {})
+    states = {key: STATE_NAMES[key][lang] for key in sorted(set(STATE_KEYS.values()))}
     for entry in CATALOG:
         name = NAMES[entry.key][lang]
-        entity.setdefault("sensor", {})[entry.key] = {"name": name}
+        sensor: dict[str, Any] = {"name": name}
+        if entry.kind in (Kind.STATE, Kind.SELECT):
+            sensor["state"] = states
+        entity.setdefault("sensor", {})[entry.key] = sensor
         if platform := PLATFORM_FOR_KIND.get(entry.kind):
-            entity.setdefault(platform, {})[entry.key] = {"name": name}
+            item: dict[str, Any] = {"name": name}
+            if entry.kind is Kind.SELECT:
+                item["state"] = states
+            entity.setdefault(platform, {})[entry.key] = item
     for platform, names in FIXED.items():
         for key, texts in names.items():
             entity.setdefault(platform, {})[key] = {"name": texts[lang]}

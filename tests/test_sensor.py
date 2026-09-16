@@ -57,8 +57,8 @@ async def test_sensor_states(
 
     state = hass.states.get(entity_id_for(hass, "sensor", config_entry, BOILER_STATE))
     assert state is not None
-    assert state.state == "Bereit"
-    assert state.attributes["options"] == ["Ausgeschaltet", "Bereit"]
+    assert state.state == "ready"
+    assert state.attributes["options"] == ["off", "ready"]
 
     total = hass.states.get(entity_id_for(hass, "sensor", config_entry, TOTAL))
     assert total is not None

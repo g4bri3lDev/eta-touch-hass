@@ -13,7 +13,14 @@ from homeassistant.const import EntityCategory, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from pyetatouch import Component, Kind, MatchedVariable, decode_value
+from pyetatouch import (
+    Component,
+    Kind,
+    MatchedVariable,
+    decode_value,
+    state_key,
+    state_keys,
+)
 
 from .coordinator import EtaConfigEntry, EtaErrorsCoordinator, fault_payload
 from .entity import EtaEntity, controller_device_info, variables_for_platform
@@ -48,7 +55,7 @@ class EtaSensor(EtaEntity, SensorEntity):
             self._attr_entity_category = EntityCategory.DIAGNOSTIC
         if self.info is not None and self.info.options:
             self._attr_device_class = SensorDeviceClass.ENUM
-            self._attr_options = list(dict.fromkeys(self.info.options.values()))
+            self._attr_options = state_keys(self.info)
             return
         self._attr_native_unit_of_measurement = self.meta.unit
         self._attr_device_class = self.meta.sensor_class
@@ -65,9 +72,10 @@ class EtaSensor(EtaEntity, SensorEntity):
         """Return the decoded value."""
         if (value := self.raw_value) is None:
             return None
-        decoded = decode_value(value, self.info)
         if self.device_class is SensorDeviceClass.ENUM:
-            return decoded if isinstance(decoded, str) else None
+            key = state_key(int(value.raw))
+            return key if key in (self.options or []) else None
+        decoded = decode_value(value, self.info)
         return decoded if isinstance(decoded, float) else None
 
 

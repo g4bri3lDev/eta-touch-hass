@@ -12,8 +12,10 @@ from pyetatouch import (
     Kind,
     MatchedVariable,
     VarAddress,
-    decode_value,
+    code_for_state,
     get_entry,
+    state_key,
+    state_keys,
     switch_codes,
 )
 
@@ -31,7 +33,7 @@ PARALLEL_UPDATES = 1
 # catalog key of a panel mode button -> option key of the mode select (in panel order)
 MODE_OPTIONS = {
     "auto_button": "auto",
-    "heat_button": "heat",
+    "heat_button": "heating",
     "setback_button": "setback",
 }
 
@@ -71,19 +73,20 @@ class EtaSelect(EtaEntity, SelectEntity):
         """Initialise the select."""
         super().__init__(entry, component, variable)
         assert self.info is not None
-        self._attr_options = list(dict.fromkeys(self.info.options.values()))
+        self._attr_options = state_keys(self.info)
 
     @property
     def current_option(self) -> str | None:
         """Return the active option."""
         if (value := self.raw_value) is None:
             return None
-        decoded = decode_value(value, self.info)
-        return decoded if isinstance(decoded, str) else None
+        key = state_key(int(value.raw))
+        return key if key in self.options else None
 
     async def async_select_option(self, option: str) -> None:
         """Select an option."""
-        await self._async_write(option)
+        assert self.info is not None
+        await self._async_write(code_for_state(self.info, option))
 
 
 class EtaModeSelect(CoordinatorEntity[EtaDataCoordinator], SelectEntity):

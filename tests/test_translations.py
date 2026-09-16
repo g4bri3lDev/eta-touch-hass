@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pyetatouch import CATALOG, Kind
+from pyetatouch import CATALOG, STATE_KEYS, Kind
 
 from custom_components.eta_touch.descriptions import META
 
@@ -47,4 +47,13 @@ def test_catalog_keys_are_covered() -> None:
     assert "problem" in entity["binary_sensor"]
     assert "active_errors" in entity["sensor"]
     assert "rediscover" in entity["button"]
-    assert set(entity["select"]["mode"]["state"]) == {"auto", "heat", "setback"}
+    assert set(entity["select"]["mode"]["state"]) == {"auto", "heating", "setback"}
+    for entry in CATALOG:
+        if entry.kind in (Kind.STATE, Kind.SELECT):
+            assert set(STATE_KEYS.values()) <= set(
+                entity["sensor"][entry.key]["state"]
+            ), entry.key
+        if entry.kind is Kind.SELECT:
+            assert set(STATE_KEYS.values()) <= set(
+                entity["select"][entry.key]["state"]
+            ), entry.key

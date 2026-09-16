@@ -39,16 +39,16 @@ async def test_select(
     entity_id = await enable_entity(hass, "select", config_entry, WW_PRIORITY)
     state = hass.states.get(entity_id)
     assert state is not None
-    assert state.state == "Hoch"
-    assert state.attributes["options"] == ["Niedrig", "Mittel", "Hoch"]
+    assert state.state == "high"
+    assert state.attributes["options"] == ["low", "medium", "high"]
 
     await hass.services.async_call(
         SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
-        {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "Mittel"},
+        {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "medium"},
         blocking=True,
     )
-    mock_client.write.assert_awaited_once_with(WW_PRIORITY, "Mittel")
+    mock_client.write.assert_awaited_once_with(WW_PRIORITY, 1972)
 
 
 async def test_mode_select(
@@ -63,12 +63,12 @@ async def test_mode_select(
     state = hass.states.get(entity_id)
     assert state is not None
     assert state.state == "auto"
-    assert state.attributes["options"] == ["auto", "heat", "setback"]
+    assert state.attributes["options"] == ["auto", "heating", "setback"]
 
     await hass.services.async_call(
         SELECT_DOMAIN,
         SERVICE_SELECT_OPTION,
-        {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "heat"},
+        {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "heating"},
         blocking=True,
     )
     mock_client.write.assert_awaited_once_with(HK_HEAT, 1803)
