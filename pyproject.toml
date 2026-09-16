@@ -42,5 +42,5 @@ combine-as-imports = true
 split-on-trailing-comma = false
 
 [tool.ruff.lint.per-file-ignores]
-"scripts/*" = ["T20"]
+"scripts/*" = ["T20", "RUF001"]
 "tests/*" = ["D1"]

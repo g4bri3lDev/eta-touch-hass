@@ -1,0 +1,400 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "This heater is already configured.",
+      "discovery_failed": "Reading the heater's configuration failed.",
+      "no_components": "No supported values were found on this heater.",
+      "not_eta_device": "The discovered device is not an ETAtouch panel.",
+      "reconfigure_successful": "The connection was updated.",
+      "wrong_device": "This address belongs to a different heater."
+    },
+    "error": {
+      "cannot_connect": "Cannot reach the heater. Check the address.",
+      "not_eta_device": "This device does not answer like an ETAtouch panel.",
+      "unknown": "Unexpected error.",
+      "unsupported_api": "The heater firmware is too old (ETAtouch API 1.2 or newer is required).",
+      "webservice_disabled": "The heater refused the connection; its web service is probably not enabled. Request LAN access on meinETA (Settings › Webservices), then enable the web service on the touch panel (System settings › Internet & interfaces)."
+    },
+    "flow_title": "ETA heater ({host})",
+    "progress": {
+      "discover": "Reading the heater's configuration. This takes about half a minute."
+    },
+    "step": {
+      "discovery_confirm": {
+        "description": "Set up the ETA heater at {host}?",
+        "title": "ETA heater found"
+      },
+      "reconfigure": {
+        "data": {
+          "host": "Host"
+        },
+        "sections": {
+          "advanced": {
+            "data": {
+              "port": "Port"
+            },
+            "name": "Advanced"
+          }
+        },
+        "title": "Change connection"
+      },
+      "user": {
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the ETAtouch panel."
+        },
+        "sections": {
+          "advanced": {
+            "data": {
+              "port": "Port"
+            },
+            "name": "Advanced"
+          }
+        },
+        "title": "Connect to ETA heater"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problem"
+      }
+    },
+    "button": {
+      "rediscover": {
+        "name": "Rediscover"
+      }
+    },
+    "number": {
+      "charge_now_target_temperature": {
+        "name": "Target temperature for charge now"
+      },
+      "curve_offset": {
+        "name": "Heating curve offset"
+      },
+      "empty_ash_box_after": {
+        "name": "Empty ash box after"
+      },
+      "flow_at_minus_10": {
+        "name": "Flow at -10 °C"
+      },
+      "flow_at_plus_10": {
+        "name": "Flow at +10 °C"
+      },
+      "heating_limit_day": {
+        "name": "Heating limit (heating)"
+      },
+      "heating_limit_night": {
+        "name": "Heating limit (setback)"
+      },
+      "hot_water_target_temperature": {
+        "name": "Hot water target temperature"
+      },
+      "pellet_stock_warning_limit": {
+        "name": "Pellet stock warning limit"
+      },
+      "setback_reduction": {
+        "name": "Setback reduction"
+      },
+      "switch_on_difference": {
+        "name": "Switch-on difference"
+      }
+    },
+    "select": {
+      "priority": {
+        "name": "Priority"
+      }
+    },
+    "sensor": {
+      "active_errors": {
+        "name": "Active errors"
+      },
+      "ash_box": {
+        "name": "Ash box"
+      },
+      "auto_button": {
+        "name": "Automatic mode"
+      },
+      "boiler_pressure": {
+        "name": "Boiler pressure"
+      },
+      "boiler_pump": {
+        "name": "Boiler pump"
+      },
+      "boiler_return_temperature": {
+        "name": "Boiler return temperature"
+      },
+      "boiler_state": {
+        "name": "Boiler state"
+      },
+      "boiler_target_temperature": {
+        "name": "Boiler target temperature"
+      },
+      "boiler_temperature": {
+        "name": "Boiler temperature"
+      },
+      "buffer_bottom_temperature": {
+        "name": "Bottom temperature"
+      },
+      "buffer_charge_count": {
+        "name": "Charges"
+      },
+      "buffer_charge_level": {
+        "name": "Charge level"
+      },
+      "buffer_charge_now": {
+        "name": "Charge now"
+      },
+      "buffer_sensor_2_temperature": {
+        "name": "Sensor 2 temperature"
+      },
+      "buffer_sensor_3_temperature": {
+        "name": "Sensor 3 temperature"
+      },
+      "buffer_sensor_4_temperature": {
+        "name": "Sensor 4 temperature"
+      },
+      "buffer_state": {
+        "name": "State"
+      },
+      "buffer_top_target_temperature": {
+        "name": "Top target temperature"
+      },
+      "buffer_top_temperature": {
+        "name": "Top temperature"
+      },
+      "charge_now_target_temperature": {
+        "name": "Target temperature for charge now"
+      },
+      "collector_pump": {
+        "name": "Collector pump"
+      },
+      "collector_temperature": {
+        "name": "Collector temperature"
+      },
+      "come_button": {
+        "name": "Coming home"
+      },
+      "consumption_since_ash_box_emptied": {
+        "name": "Consumption since ash box emptied"
+      },
+      "consumption_since_deashing": {
+        "name": "Consumption since de-ashing"
+      },
+      "curve_offset": {
+        "name": "Heating curve offset"
+      },
+      "discharge_screw": {
+        "name": "Discharge screw"
+      },
+      "discharge_state": {
+        "name": "Discharge state"
+      },
+      "empty_ash_box_after": {
+        "name": "Empty ash box after"
+      },
+      "fault_status": {
+        "name": "Fault status"
+      },
+      "fill_pellet_container": {
+        "name": "Fill pellet container"
+      },
+      "flow_at_minus_10": {
+        "name": "Flow at -10 °C"
+      },
+      "flow_at_plus_10": {
+        "name": "Flow at +10 °C"
+      },
+      "flow_temperature": {
+        "name": "Flow temperature"
+      },
+      "flue_gas_fan_speed": {
+        "name": "Flue gas fan speed"
+      },
+      "flue_gas_temperature": {
+        "name": "Flue gas temperature"
+      },
+      "full_load_hours": {
+        "name": "Full-load hours"
+      },
+      "full_load_hours_since_cleaning": {
+        "name": "Full-load hours since cleaning"
+      },
+      "full_load_hours_since_service": {
+        "name": "Full-load hours since service"
+      },
+      "go_button": {
+        "name": "Leaving home"
+      },
+      "heat_button": {
+        "name": "Heating mode"
+      },
+      "heating_circuit_pump": {
+        "name": "Pump"
+      },
+      "heating_circuit_state": {
+        "name": "State"
+      },
+      "heating_limit_day": {
+        "name": "Heating limit (heating)"
+      },
+      "heating_limit_night": {
+        "name": "Heating limit (setback)"
+      },
+      "heating_run_count": {
+        "name": "Heating runs"
+      },
+      "hot_water_bottom_temperature": {
+        "name": "Hot water bottom temperature"
+      },
+      "hot_water_charge_now": {
+        "name": "Charge hot water now"
+      },
+      "hot_water_charging_pump": {
+        "name": "Charging pump"
+      },
+      "hot_water_state": {
+        "name": "State"
+      },
+      "hot_water_target_temperature": {
+        "name": "Hot water target temperature"
+      },
+      "hot_water_temperature": {
+        "name": "Hot water temperature"
+      },
+      "ignition": {
+        "name": "Ignition"
+      },
+      "ignition_count": {
+        "name": "Ignitions"
+      },
+      "operating_mode": {
+        "name": "Operating mode"
+      },
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "pellet_container": {
+        "name": "Pellet container"
+      },
+      "pellet_container_content": {
+        "name": "Pellet container content"
+      },
+      "pellet_stock": {
+        "name": "Pellet stock"
+      },
+      "pellet_stock_warning_limit": {
+        "name": "Pellet stock warning limit"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "priority": {
+        "name": "Priority"
+      },
+      "requested_power": {
+        "name": "Requested power"
+      },
+      "requested_temperature": {
+        "name": "Requested temperature"
+      },
+      "residual_oxygen": {
+        "name": "Residual oxygen"
+      },
+      "return_temperature": {
+        "name": "Return temperature"
+      },
+      "setback_button": {
+        "name": "Setback mode"
+      },
+      "setback_reduction": {
+        "name": "Setback reduction"
+      },
+      "solar_state": {
+        "name": "State"
+      },
+      "stoker_screw": {
+        "name": "Stoker screw"
+      },
+      "storage_1_bottom_temperature": {
+        "name": "Storage 1 bottom temperature"
+      },
+      "suction_turbine": {
+        "name": "Suction turbine"
+      },
+      "switch_on_difference": {
+        "name": "Switch-on difference"
+      },
+      "total_consumption": {
+        "name": "Total consumption"
+      }
+    },
+    "switch": {
+      "auto_button": {
+        "name": "Automatic mode"
+      },
+      "buffer_charge_now": {
+        "name": "Charge now"
+      },
+      "come_button": {
+        "name": "Coming home"
+      },
+      "fill_pellet_container": {
+        "name": "Fill pellet container"
+      },
+      "go_button": {
+        "name": "Leaving home"
+      },
+      "heat_button": {
+        "name": "Heating mode"
+      },
+      "hot_water_charge_now": {
+        "name": "Charge hot water now"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "setback_button": {
+        "name": "Setback mode"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Cannot connect to the heater: {error}"
+    },
+    "rediscover_failed": {
+      "message": "Rediscovering the heater failed: {error}"
+    },
+    "update_failed": {
+      "message": "Updating from the heater failed: {error}"
+    },
+    "webservice_unavailable": {
+      "message": "The heater's web service refused the connection."
+    },
+    "write_failed": {
+      "message": "Writing to the heater failed: {error}"
+    }
+  },
+  "issues": {
+    "webservice_unavailable": {
+      "description": "The heater at {host} refuses connections. Check that its web service is still enabled. Request LAN access on meinETA (Settings › Webservices), then enable the web service on the touch panel (System settings › Internet & interfaces).",
+      "title": "ETA web service unavailable"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "scan_interval": "Seconds between updates (ETA recommends at least 30)."
+        }
+      }
+    }
+  }
+}

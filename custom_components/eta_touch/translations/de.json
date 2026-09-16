@@ -1,0 +1,400 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Diese Heizung ist bereits eingerichtet.",
+      "discovery_failed": "Das Lesen der Konfiguration ist fehlgeschlagen.",
+      "no_components": "Auf dieser Heizung wurden keine unterstützten Werte gefunden.",
+      "not_eta_device": "Das gefundene Gerät ist kein ETAtouch-Display.",
+      "reconfigure_successful": "Die Verbindung wurde aktualisiert.",
+      "wrong_device": "Diese Adresse gehört zu einer anderen Heizung."
+    },
+    "error": {
+      "cannot_connect": "Die Heizung ist nicht erreichbar. Prüfe die Adresse.",
+      "not_eta_device": "Dieses Gerät antwortet nicht wie ein ETAtouch-Display.",
+      "unknown": "Unerwarteter Fehler.",
+      "unsupported_api": "Die Firmware der Heizung ist zu alt (ETAtouch-API 1.2 oder neuer erforderlich).",
+      "webservice_disabled": "Die Heizung hat die Verbindung abgelehnt; der Webservice ist vermutlich nicht aktiviert. Beantrage den LAN-Zugriff in meinETA (Einstellungen › Webservices) und aktiviere den Webservice anschließend am Touch-Display (Systemeinstellungen › Internet & Schnittstellen)."
+    },
+    "flow_title": "ETA-Heizung ({host})",
+    "progress": {
+      "discover": "Die Konfiguration der Heizung wird gelesen. Das dauert etwa eine halbe Minute."
+    },
+    "step": {
+      "discovery_confirm": {
+        "description": "Die ETA-Heizung unter {host} einrichten?",
+        "title": "ETA-Heizung gefunden"
+      },
+      "reconfigure": {
+        "data": {
+          "host": "Host"
+        },
+        "sections": {
+          "advanced": {
+            "data": {
+              "port": "Port"
+            },
+            "name": "Erweitert"
+          }
+        },
+        "title": "Verbindung ändern"
+      },
+      "user": {
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP-Adresse oder Hostname des ETAtouch-Displays."
+        },
+        "sections": {
+          "advanced": {
+            "data": {
+              "port": "Port"
+            },
+            "name": "Erweitert"
+          }
+        },
+        "title": "Mit ETA-Heizung verbinden"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problem"
+      }
+    },
+    "button": {
+      "rediscover": {
+        "name": "Neu erkennen"
+      }
+    },
+    "number": {
+      "charge_now_target_temperature": {
+        "name": "Solltemperatur für Sofort laden"
+      },
+      "curve_offset": {
+        "name": "Schieberposition"
+      },
+      "empty_ash_box_after": {
+        "name": "Aschebox leeren nach"
+      },
+      "flow_at_minus_10": {
+        "name": "Vorlauf bei -10 °C"
+      },
+      "flow_at_plus_10": {
+        "name": "Vorlauf bei +10 °C"
+      },
+      "heating_limit_day": {
+        "name": "Heizgrenze Heizen"
+      },
+      "heating_limit_night": {
+        "name": "Heizgrenze Absenken"
+      },
+      "hot_water_target_temperature": {
+        "name": "Warmwasser-Solltemperatur"
+      },
+      "pellet_stock_warning_limit": {
+        "name": "Vorrat-Warngrenze"
+      },
+      "setback_reduction": {
+        "name": "Vorlauf-Absenkung"
+      },
+      "switch_on_difference": {
+        "name": "Einschaltdifferenz"
+      }
+    },
+    "select": {
+      "priority": {
+        "name": "Priorität"
+      }
+    },
+    "sensor": {
+      "active_errors": {
+        "name": "Aktive Störungen"
+      },
+      "ash_box": {
+        "name": "Aschebox"
+      },
+      "auto_button": {
+        "name": "Automatik"
+      },
+      "boiler_pressure": {
+        "name": "Kesseldruck"
+      },
+      "boiler_pump": {
+        "name": "Kesselpumpe"
+      },
+      "boiler_return_temperature": {
+        "name": "Kessel-Rücklauftemperatur"
+      },
+      "boiler_state": {
+        "name": "Kesselzustand"
+      },
+      "boiler_target_temperature": {
+        "name": "Kessel-Solltemperatur"
+      },
+      "boiler_temperature": {
+        "name": "Kesseltemperatur"
+      },
+      "buffer_bottom_temperature": {
+        "name": "Temperatur unten"
+      },
+      "buffer_charge_count": {
+        "name": "Pufferladungen"
+      },
+      "buffer_charge_level": {
+        "name": "Ladezustand"
+      },
+      "buffer_charge_now": {
+        "name": "Sofort laden"
+      },
+      "buffer_sensor_2_temperature": {
+        "name": "Fühler 2"
+      },
+      "buffer_sensor_3_temperature": {
+        "name": "Fühler 3"
+      },
+      "buffer_sensor_4_temperature": {
+        "name": "Fühler 4"
+      },
+      "buffer_state": {
+        "name": "Zustand"
+      },
+      "buffer_top_target_temperature": {
+        "name": "Solltemperatur oben"
+      },
+      "buffer_top_temperature": {
+        "name": "Temperatur oben"
+      },
+      "charge_now_target_temperature": {
+        "name": "Solltemperatur für Sofort laden"
+      },
+      "collector_pump": {
+        "name": "Kollektorpumpe"
+      },
+      "collector_temperature": {
+        "name": "Kollektortemperatur"
+      },
+      "come_button": {
+        "name": "Kommen"
+      },
+      "consumption_since_ash_box_emptied": {
+        "name": "Verbrauch seit Aschebox leeren"
+      },
+      "consumption_since_deashing": {
+        "name": "Verbrauch seit Entaschung"
+      },
+      "curve_offset": {
+        "name": "Schieberposition"
+      },
+      "discharge_screw": {
+        "name": "Austragschnecke"
+      },
+      "discharge_state": {
+        "name": "Austragung"
+      },
+      "empty_ash_box_after": {
+        "name": "Aschebox leeren nach"
+      },
+      "fault_status": {
+        "name": "Störmeldung"
+      },
+      "fill_pellet_container": {
+        "name": "Pelletsbehälter auffüllen"
+      },
+      "flow_at_minus_10": {
+        "name": "Vorlauf bei -10 °C"
+      },
+      "flow_at_plus_10": {
+        "name": "Vorlauf bei +10 °C"
+      },
+      "flow_temperature": {
+        "name": "Vorlauftemperatur"
+      },
+      "flue_gas_fan_speed": {
+        "name": "Abgasgebläse-Drehzahl"
+      },
+      "flue_gas_temperature": {
+        "name": "Abgastemperatur"
+      },
+      "full_load_hours": {
+        "name": "Volllaststunden"
+      },
+      "full_load_hours_since_cleaning": {
+        "name": "Volllaststunden seit Reinigung"
+      },
+      "full_load_hours_since_service": {
+        "name": "Volllaststunden seit Wartung"
+      },
+      "go_button": {
+        "name": "Gehen"
+      },
+      "heat_button": {
+        "name": "Heizen"
+      },
+      "heating_circuit_pump": {
+        "name": "Pumpe"
+      },
+      "heating_circuit_state": {
+        "name": "Zustand"
+      },
+      "heating_limit_day": {
+        "name": "Heizgrenze Heizen"
+      },
+      "heating_limit_night": {
+        "name": "Heizgrenze Absenken"
+      },
+      "heating_run_count": {
+        "name": "Heizbetriebe"
+      },
+      "hot_water_bottom_temperature": {
+        "name": "Warmwasser unten"
+      },
+      "hot_water_charge_now": {
+        "name": "Warmwasser sofort laden"
+      },
+      "hot_water_charging_pump": {
+        "name": "Ladepumpe"
+      },
+      "hot_water_state": {
+        "name": "Zustand"
+      },
+      "hot_water_target_temperature": {
+        "name": "Warmwasser-Solltemperatur"
+      },
+      "hot_water_temperature": {
+        "name": "Warmwassertemperatur"
+      },
+      "ignition": {
+        "name": "Zündung"
+      },
+      "ignition_count": {
+        "name": "Zündungen"
+      },
+      "operating_mode": {
+        "name": "Betrieb"
+      },
+      "outdoor_temperature": {
+        "name": "Außentemperatur"
+      },
+      "pellet_container": {
+        "name": "Pelletsbehälter"
+      },
+      "pellet_container_content": {
+        "name": "Inhalt Pelletsbehälter"
+      },
+      "pellet_stock": {
+        "name": "Pelletvorrat"
+      },
+      "pellet_stock_warning_limit": {
+        "name": "Vorrat-Warngrenze"
+      },
+      "power": {
+        "name": "Ein/Aus"
+      },
+      "priority": {
+        "name": "Priorität"
+      },
+      "requested_power": {
+        "name": "Angeforderte Leistung"
+      },
+      "requested_temperature": {
+        "name": "Angeforderte Temperatur"
+      },
+      "residual_oxygen": {
+        "name": "Restsauerstoff"
+      },
+      "return_temperature": {
+        "name": "Rücklauftemperatur"
+      },
+      "setback_button": {
+        "name": "Absenken"
+      },
+      "setback_reduction": {
+        "name": "Vorlauf-Absenkung"
+      },
+      "solar_state": {
+        "name": "Zustand"
+      },
+      "stoker_screw": {
+        "name": "Stokerschnecke"
+      },
+      "storage_1_bottom_temperature": {
+        "name": "Speicher 1 unten"
+      },
+      "suction_turbine": {
+        "name": "Saugturbine"
+      },
+      "switch_on_difference": {
+        "name": "Einschaltdifferenz"
+      },
+      "total_consumption": {
+        "name": "Gesamtverbrauch"
+      }
+    },
+    "switch": {
+      "auto_button": {
+        "name": "Automatik"
+      },
+      "buffer_charge_now": {
+        "name": "Sofort laden"
+      },
+      "come_button": {
+        "name": "Kommen"
+      },
+      "fill_pellet_container": {
+        "name": "Pelletsbehälter auffüllen"
+      },
+      "go_button": {
+        "name": "Gehen"
+      },
+      "heat_button": {
+        "name": "Heizen"
+      },
+      "hot_water_charge_now": {
+        "name": "Warmwasser sofort laden"
+      },
+      "power": {
+        "name": "Ein/Aus"
+      },
+      "setback_button": {
+        "name": "Absenken"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Keine Verbindung zur Heizung: {error}"
+    },
+    "rediscover_failed": {
+      "message": "Neuerkennung der Heizung fehlgeschlagen: {error}"
+    },
+    "update_failed": {
+      "message": "Aktualisierung von der Heizung fehlgeschlagen: {error}"
+    },
+    "webservice_unavailable": {
+      "message": "Der Webservice der Heizung hat die Verbindung abgelehnt."
+    },
+    "write_failed": {
+      "message": "Schreiben auf die Heizung fehlgeschlagen: {error}"
+    }
+  },
+  "issues": {
+    "webservice_unavailable": {
+      "description": "Die Heizung unter {host} lehnt Verbindungen ab. Prüfe, ob der Webservice noch aktiviert ist. Beantrage den LAN-Zugriff in meinETA (Einstellungen › Webservices) und aktiviere den Webservice anschließend am Touch-Display (Systemeinstellungen › Internet & Schnittstellen).",
+      "title": "ETA-Webservice nicht verfügbar"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Aktualisierungsintervall"
+        },
+        "data_description": {
+          "scan_interval": "Sekunden zwischen Aktualisierungen (ETA empfiehlt mindestens 30)."
+        }
+      }
+    }
+  }
+}
