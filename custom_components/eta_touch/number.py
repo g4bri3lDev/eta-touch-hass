@@ -38,15 +38,16 @@ class EtaNumber(EtaEntity, NumberEntity):
         """Initialise the number."""
         super().__init__(entry, component, variable)
         assert self.info is not None
-        scale = self.info.scale or 1
-        self._attr_native_step = 1 / scale
+        self._divisor = self.meta.number_divisor
+        scale = (self.info.scale or 1) * self._divisor
+        self._attr_native_step = 1 / (self.info.scale or 1)
         self._attr_native_min_value = (
             self.info.minimum / scale if self.info.minimum is not None else -UNBOUNDED
         )
         self._attr_native_max_value = (
             self.info.maximum / scale if self.info.maximum is not None else UNBOUNDED
         )
-        self._attr_native_unit_of_measurement = self.meta.unit
+        self._attr_native_unit_of_measurement = self.meta.number_unit or self.meta.unit
         self._attr_device_class = self.meta.number_class
 
     @property
@@ -55,8 +56,8 @@ class EtaNumber(EtaEntity, NumberEntity):
         if (value := self.raw_value) is None:
             return None
         decoded = decode_value(value, self.info)
-        return decoded if isinstance(decoded, float) else None
+        return decoded / self._divisor if isinstance(decoded, float) else None
 
     async def async_set_native_value(self, value: float) -> None:
         """Write a new value."""
-        await self._async_write(value)
+        await self._async_write(value * self._divisor)

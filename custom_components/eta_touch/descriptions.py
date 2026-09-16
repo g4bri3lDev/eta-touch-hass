@@ -27,6 +27,9 @@ class Meta:
     suggested_unit: str | None = None
     precision: int | None = None
     config: bool = False
+    # numbers only: shown value = raw value / scale / number_divisor, in number_unit
+    number_unit: str | None = None
+    number_divisor: int = 1
 
 
 PLAIN = Meta()
@@ -95,6 +98,17 @@ META: dict[str, Meta] = {
     "ignition_count": PLAIN,
     "heating_run_count": PLAIN,
     "fill_pellet_container": PLAIN,
+    "pellet_suction_time": PLAIN,
+    "quiet_time_start": CONFIG,
+    "quiet_time_duration": Meta(
+        unit=UnitOfTime.SECONDS,
+        sensor_class=SensorDeviceClass.DURATION,
+        suggested_unit=UnitOfTime.HOURS,
+        number_class=NumberDeviceClass.DURATION,
+        number_unit=UnitOfTime.MINUTES,
+        number_divisor=60,
+        config=True,
+    ),
     # pellet store
     "discharge_state": PLAIN,
     "pellet_stock": WEIGHT,
@@ -140,4 +154,5 @@ META: dict[str, Meta] = {
     "storage_1_bottom_temperature": TEMP,
     # system
     "fault_status": PLAIN,
+    "anti_seize_time": CONFIG,
 }

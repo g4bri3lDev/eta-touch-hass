@@ -20,6 +20,7 @@ import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.eta_touch.const import (
+    CONF_CALORIFIC_VALUE,
     CONF_INSTALLATION,
     CONF_SCAN_INTERVAL,
     DOMAIN,
@@ -262,7 +263,7 @@ async def test_options_flow(hass: HomeAssistant, config_entry: MockConfigEntry) 
     result = await hass.config_entries.options.async_init(config_entry.entry_id)
     assert result["type"] is FlowResultType.FORM
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {CONF_SCAN_INTERVAL: 120}
+        result["flow_id"], {CONF_SCAN_INTERVAL: 120, CONF_CALORIFIC_VALUE: 5.0}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert config_entry.options == {CONF_SCAN_INTERVAL: 120}
+    assert config_entry.options == {CONF_SCAN_INTERVAL: 120, CONF_CALORIFIC_VALUE: 5.0}

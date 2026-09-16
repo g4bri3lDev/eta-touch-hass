@@ -29,6 +29,8 @@ from .coordinator import EtaConfigEntry, EtaDataCoordinator
 from .descriptions import META
 from .helpers import mode_unique_id, variable_unique_id
 
+ENERGY_SOURCE_KEY = "total_consumption"
+
 MODELS = {
     ComponentType.BOILER: "Boiler",
     ComponentType.HEATING_CIRCUIT: "Heating circuit",
@@ -80,6 +82,8 @@ def platform_for(variable: MatchedVariable) -> Platform | None:
         return None  # grouped into one select per function block
     if catalog_entry.kind is Kind.ACTION:
         return Platform.BUTTON if writable else None
+    if catalog_entry.kind is Kind.TIME:
+        return Platform.TIME if writable else None
     if writable and catalog_entry.kind is Kind.SWITCH:
         return Platform.SWITCH
     if writable and catalog_entry.kind is Kind.SELECT:
@@ -89,16 +93,24 @@ def platform_for(variable: MatchedVariable) -> Platform | None:
     return Platform.SENSOR
 
 
-def representing_unique_id(
+def energy_unique_id(entry_id: str, component: Component) -> str:
+    """Return the unique ID of a boiler's energy sensor."""
+    return f"{entry_id}_{component.node}_{component.fub}_energy"
+
+
+def representing_unique_ids(
     entry_id: str, component: Component, variable: MatchedVariable
-) -> str | None:
-    """Return the unique ID of the entity that shows a variable (None if not polled)."""
+) -> list[str]:
+    """Return the unique IDs of the entities that need a variable's value."""
     catalog_entry = get_entry(variable.key)
     if catalog_entry is None or catalog_entry.kind is Kind.ACTION:
-        return None
+        return []
     if catalog_entry.kind is Kind.MODE:
-        return mode_unique_id(entry_id, component.node, component.fub)
-    return variable_unique_id(entry_id, variable.address)
+        return [mode_unique_id(entry_id, component.node, component.fub)]
+    unique_ids = [variable_unique_id(entry_id, variable.address)]
+    if variable.key == ENERGY_SOURCE_KEY:
+        unique_ids.append(energy_unique_id(entry_id, component))
+    return unique_ids
 
 
 async def async_write(

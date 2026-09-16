@@ -64,6 +64,10 @@ NAMES: dict[str, tuple[str, str]] = {
     "ignition_count": ("Ignitions", "Zündungen"),
     "heating_run_count": ("Heating runs", "Heizbetriebe"),
     "fill_pellet_container": ("Fill pellet container", "Pelletsbehälter auffüllen"),
+    "pellet_suction_time": ("Pellet suction time", "Saugzeitpunkt"),
+    "quiet_time_start": ("Quiet time start", "Beginn Ruhezeit"),
+    "quiet_time_duration": ("Quiet time duration", "Dauer Ruhezeit"),
+    "anti_seize_time": ("Anti-seize time", "Uhrzeit Antiblockierschutz"),
     "discharge_state": ("Discharge state", "Austragung"),
     "pellet_stock": ("Pellet stock", "Pelletvorrat"),
     "pellet_stock_warning_limit": ("Pellet stock warning limit", "Vorrat-Warngrenze"),
@@ -119,7 +123,11 @@ NAMES: dict[str, tuple[str, str]] = {
 
 FIXED: dict[str, dict[str, tuple[str, str]]] = {
     "binary_sensor": {"problem": ("Problem", "Problem")},
-    "sensor": {"active_errors": ("Active errors", "Aktive Störungen")},
+    "sensor": {
+        "active_errors": ("Active errors", "Aktive Störungen"),
+        "latest_error": ("Latest error", "Letzte Störung"),
+        "energy": ("Heat energy", "Wärmeenergie"),
+    },
     "button": {"rediscover": ("Rediscover", "Neu erkennen")},
     "select": {"mode": ("Mode", "Betriebsart")},
 }
@@ -196,6 +204,14 @@ TEXTS: dict[str, tuple[str, str]] = {
         "Update interval",
         "Aktualisierungsintervall",
     ),
+    "options.step.init.data.calorific_value": (
+        "Pellet calorific value",
+        "Heizwert der Pellets",
+    ),
+    "options.step.init.data_description.calorific_value": (
+        "Energy per kilogram of pellets, used for the heat energy sensor (typically 4.8 kWh/kg).",
+        "Energie pro Kilogramm Pellets für den Wärmeenergie-Sensor (üblich: 4,8 kWh/kg).",
+    ),
     "options.step.init.data_description.scan_interval": (
         "Seconds between updates (ETA recommends at least 30).",
         "Sekunden zwischen Aktualisierungen (ETA empfiehlt mindestens 30).",
@@ -235,6 +251,7 @@ PLATFORM_FOR_KIND = {
     Kind.SWITCH: "switch",
     Kind.SELECT: "select",
     Kind.ACTION: "button",
+    Kind.TIME: "time",
 }
 
 MODE_STATES: dict[str, tuple[str, str]] = {

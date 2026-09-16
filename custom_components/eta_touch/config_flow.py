@@ -37,8 +37,10 @@ from pyetatouch import (
 import voluptuous as vol
 
 from .const import (
+    CONF_CALORIFIC_VALUE,
     CONF_INSTALLATION,
     CONF_SCAN_INTERVAL,
+    DEFAULT_CALORIFIC_VALUE,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_SCAN_INTERVAL,
@@ -222,7 +224,7 @@ class EtaTouchConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class EtaTouchOptionsFlow(OptionsFlowWithReload):
-    """Options: update interval."""
+    """Options: update interval and pellet calorific value."""
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -242,7 +244,18 @@ class EtaTouchOptionsFlow(OptionsFlowWithReload):
                         unit_of_measurement="s",
                         mode=NumberSelectorMode.BOX,
                     )
-                )
+                ),
+                vol.Required(
+                    CONF_CALORIFIC_VALUE, default=DEFAULT_CALORIFIC_VALUE
+                ): NumberSelector(
+                    NumberSelectorConfig(
+                        min=3.0,
+                        max=6.0,
+                        step=0.1,
+                        unit_of_measurement="kWh/kg",
+                        mode=NumberSelectorMode.BOX,
+                    )
+                ),
             }
         )
         return self.async_show_form(

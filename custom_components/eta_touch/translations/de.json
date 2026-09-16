@@ -89,6 +89,9 @@
       "pellet_stock_warning_limit": {
         "name": "Vorrat-Warngrenze"
       },
+      "quiet_time_duration": {
+        "name": "Dauer Ruhezeit"
+      },
       "setback_reduction": {
         "name": "Vorlauf-Absenkung"
       },
@@ -157,6 +160,9 @@
     "sensor": {
       "active_errors": {
         "name": "Aktive Störungen"
+      },
+      "anti_seize_time": {
+        "name": "Uhrzeit Antiblockierschutz"
       },
       "ash_box": {
         "name": "Aschebox",
@@ -421,6 +427,9 @@
       },
       "empty_ash_box_after": {
         "name": "Aschebox leeren nach"
+      },
+      "energy": {
+        "name": "Wärmeenergie"
       },
       "fault_status": {
         "name": "Störmeldung",
@@ -767,6 +776,9 @@
       "ignition_count": {
         "name": "Zündungen"
       },
+      "latest_error": {
+        "name": "Letzte Störung"
+      },
       "operating_mode": {
         "name": "Betrieb",
         "state": {
@@ -875,6 +887,9 @@
       "pellet_stock_warning_limit": {
         "name": "Vorrat-Warngrenze"
       },
+      "pellet_suction_time": {
+        "name": "Saugzeitpunkt"
+      },
       "power": {
         "name": "Ein/Aus"
       },
@@ -925,6 +940,12 @@
           "vacation": "Urlaub",
           "yes": "Ja"
         }
+      },
+      "quiet_time_duration": {
+        "name": "Dauer Ruhezeit"
+      },
+      "quiet_time_start": {
+        "name": "Beginn Ruhezeit"
       },
       "requested_power": {
         "name": "Angeforderte Leistung"
@@ -1063,6 +1084,17 @@
       "power": {
         "name": "Ein/Aus"
       }
+    },
+    "time": {
+      "anti_seize_time": {
+        "name": "Uhrzeit Antiblockierschutz"
+      },
+      "pellet_suction_time": {
+        "name": "Saugzeitpunkt"
+      },
+      "quiet_time_start": {
+        "name": "Beginn Ruhezeit"
+      }
     }
   },
   "exceptions": {
@@ -1092,9 +1124,11 @@
     "step": {
       "init": {
         "data": {
+          "calorific_value": "Heizwert der Pellets",
           "scan_interval": "Aktualisierungsintervall"
         },
         "data_description": {
+          "calorific_value": "Energie pro Kilogramm Pellets für den Wärmeenergie-Sensor (üblich: 4,8 kWh/kg).",
           "scan_interval": "Sekunden zwischen Aktualisierungen (ETA empfiehlt mindestens 30)."
         }
       }

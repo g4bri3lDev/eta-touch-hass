@@ -89,6 +89,9 @@
       "pellet_stock_warning_limit": {
         "name": "Pellet stock warning limit"
       },
+      "quiet_time_duration": {
+        "name": "Quiet time duration"
+      },
       "setback_reduction": {
         "name": "Setback reduction"
       },
@@ -157,6 +160,9 @@
     "sensor": {
       "active_errors": {
         "name": "Active errors"
+      },
+      "anti_seize_time": {
+        "name": "Anti-seize time"
       },
       "ash_box": {
         "name": "Ash box",
@@ -421,6 +427,9 @@
       },
       "empty_ash_box_after": {
         "name": "Empty ash box after"
+      },
+      "energy": {
+        "name": "Heat energy"
       },
       "fault_status": {
         "name": "Fault status",
@@ -767,6 +776,9 @@
       "ignition_count": {
         "name": "Ignitions"
       },
+      "latest_error": {
+        "name": "Latest error"
+      },
       "operating_mode": {
         "name": "Operating mode",
         "state": {
@@ -875,6 +887,9 @@
       "pellet_stock_warning_limit": {
         "name": "Pellet stock warning limit"
       },
+      "pellet_suction_time": {
+        "name": "Pellet suction time"
+      },
       "power": {
         "name": "Power"
       },
@@ -925,6 +940,12 @@
           "vacation": "Vacation",
           "yes": "Yes"
         }
+      },
+      "quiet_time_duration": {
+        "name": "Quiet time duration"
+      },
+      "quiet_time_start": {
+        "name": "Quiet time start"
       },
       "requested_power": {
         "name": "Requested power"
@@ -1063,6 +1084,17 @@
       "power": {
         "name": "Power"
       }
+    },
+    "time": {
+      "anti_seize_time": {
+        "name": "Anti-seize time"
+      },
+      "pellet_suction_time": {
+        "name": "Pellet suction time"
+      },
+      "quiet_time_start": {
+        "name": "Quiet time start"
+      }
     }
   },
   "exceptions": {
@@ -1092,9 +1124,11 @@
     "step": {
       "init": {
         "data": {
+          "calorific_value": "Pellet calorific value",
           "scan_interval": "Update interval"
         },
         "data_description": {
+          "calorific_value": "Energy per kilogram of pellets, used for the heat energy sensor (typically 4.8 kWh/kg).",
           "scan_interval": "Seconds between updates (ETA recommends at least 30)."
         }
       }

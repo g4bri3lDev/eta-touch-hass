@@ -4,7 +4,13 @@ from datetime import datetime, timedelta
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE, EntityCategory
+from homeassistant.const import (
+    STATE_OFF,
+    STATE_ON,
+    STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
+    EntityCategory,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er, issue_registry as ir
 from pyetatouch import EtaFault, EtaWebserviceUnavailableError
@@ -122,8 +128,10 @@ async def test_fault_entities_and_events(
     await setup_integration(hass, config_entry)
     problem = entity_id_for(hass, "binary_sensor", config_entry, "problem")
     active = entity_id_for(hass, "sensor", config_entry, "active_errors")
+    latest = entity_id_for(hass, "sensor", config_entry, "latest_error")
     assert hass.states.get(problem).state == STATE_OFF
     assert hass.states.get(active).state == "0"
+    assert hass.states.get(latest).state == STATE_UNKNOWN
 
     raised = async_capture_events(hass, EVENT_ERROR_RAISED)
     cleared = async_capture_events(hass, EVENT_ERROR_CLEARED)
@@ -138,9 +146,42 @@ async def test_fault_entities_and_events(
     assert len(raised) == 1
     assert raised[0].data["component"] == "Kessel"
     assert raised[0].data["time"] == "2026-09-16T12:00:00"
+    latest_state = hass.states.get(latest)
+    assert latest_state.state == "Abgasfühler"
+    assert latest_state.attributes["component"] == "Kessel"
 
     mock_client.errors.return_value = []
     freezer.tick(timedelta(minutes=5, seconds=1))
     async_fire_time_changed(hass)
     await hass.async_block_till_done()
     assert len(cleared) == 1
+
+
+async def test_energy_sensor(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_client: object,
+    varset: FakeVarSet,
+) -> None:
+    config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(
+        config_entry, options={"calorific_value": 5.0}
+    )
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+    entity_id = entity_id_for(hass, "sensor", config_entry, "40_10021_energy")
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.state == "85000.0"  # 17000 kg x 5.0 kWh/kg
+    assert state.attributes["unit_of_measurement"] == "kWh"
+    assert state.attributes["device_class"] == SensorDeviceClass.ENERGY
+    assert state.attributes["state_class"] == SensorStateClass.TOTAL_INCREASING
+
+    # polled even when the consumption sensor itself is disabled
+    er.async_get(hass).async_update_entity(
+        entity_id_for(hass, "sensor", config_entry, TOTAL),
+        disabled_by=er.RegistryEntryDisabler.USER,
+    )
+    await hass.config_entries.async_reload(config_entry.entry_id)
+    await hass.async_block_till_done()
+    assert TOTAL in varset.addresses

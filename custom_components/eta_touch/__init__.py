@@ -25,7 +25,7 @@ from .coordinator import (
     EtaErrorsCoordinator,
     EtaRuntimeData,
 )
-from .entity import controller_device_info, representing_unique_id
+from .entity import controller_device_info, representing_unique_ids
 from .helpers import varset_name
 
 PLATFORMS = [
@@ -35,6 +35,7 @@ PLATFORMS = [
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.TIME,
 ]
 
 
@@ -51,14 +52,17 @@ def _enabled_addresses(
     addresses: list[VarAddress] = []
     for component in installation.components:
         for variable in installation.variables_for(component):
-            unique_id = representing_unique_id(entry.entry_id, component, variable)
+            unique_ids = representing_unique_ids(entry.entry_id, component, variable)
             catalog_entry = get_entry(variable.key)
-            if unique_id is None or catalog_entry is None:
+            if not unique_ids or catalog_entry is None:
                 continue
-            if (registry_entry := known.get(unique_id)) is not None:
-                enabled = registry_entry.disabled_by is None
-            else:
-                enabled = enabled_by_default(catalog_entry, component.type)
+            default = enabled_by_default(catalog_entry, component.type)
+            enabled = any(
+                registry_entry.disabled_by is None
+                if (registry_entry := known.get(unique_id)) is not None
+                else default
+                for unique_id in unique_ids
+            )
             if enabled:
                 addresses.append(variable.address)
     return addresses

@@ -37,6 +37,8 @@ HK_AUTO = VarAddress.parse("120/10101/0/0/12126")
 HK_HEAT = VarAddress.parse("120/10101/0/0/12125")
 HK_SETBACK = VarAddress.parse("120/10101/0/0/12230")
 HK_COME = VarAddress.parse("120/10101/0/0/12218")
+SUCTION_TIME = VarAddress.parse("40/10021/0/0/12152")
+QUIET_DURATION = VarAddress.parse("40/10021/0/0/12249")
 
 STATES = {4000: "Ausgeschaltet", 4001: "Bereit"}
 ON_OFF = {1802: "Aus", 1803: "Ein"}
@@ -55,6 +57,7 @@ ENABLED_BY_DEFAULT = {
     HK_AUTO,
     HK_HEAT,
     HK_SETBACK,
+    SUCTION_TIME,
 }
 
 
@@ -175,6 +178,29 @@ INSTALLATION = Installation(
             info(HK_SETBACK, "Absenken Taste", writable=True, options=ON_OFF),
         ),
         MatchedVariable(
+            "pellet_suction_time",
+            SUCTION_TIME,
+            info(
+                SUCTION_TIME,
+                "Saugzeitpunkt",
+                writable=True,
+                minimum=0.0,
+                maximum=1439.0,
+            ),
+        ),
+        MatchedVariable(
+            "quiet_time_duration",
+            QUIET_DURATION,
+            info(
+                QUIET_DURATION,
+                "Dauer Ruhezeit",
+                writable=True,
+                unit="s",
+                minimum=0.0,
+                maximum=43200.0,
+            ),
+        ),
+        MatchedVariable(
             "come_button",
             HK_COME,
             info(HK_COME, "Kommen Taste", writable=True, options=ON_OFF),
@@ -200,6 +226,8 @@ VALUES = {
     HK_HEAT: value(HK_HEAT, 1802.0, "Aus", offset=1802),
     HK_SETBACK: value(HK_SETBACK, 1802.0, "Aus", offset=1802),
     HK_COME: value(HK_COME, 1802.0, "Aus", offset=1802),
+    SUCTION_TIME: value(SUCTION_TIME, 1200.0, "20:00"),
+    QUIET_DURATION: value(QUIET_DURATION, 36000.0, "10h 0m", "s"),
 }
 
 
