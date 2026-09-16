@@ -5,6 +5,7 @@ from typing import Final
 
 DOMAIN: Final = "eta_touch"
 MANUFACTURER: Final = "ETA Heiztechnik"
+MEINETA_URL: Final = "https://www.meineta.at"
 
 CONF_INSTALLATION: Final = "installation"
 CONF_SCAN_INTERVAL: Final = "scan_interval"

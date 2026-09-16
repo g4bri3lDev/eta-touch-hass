@@ -5,7 +5,11 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers.device_registry import ChildDeviceInfo, DeviceInfo
+from homeassistant.helpers.device_registry import (
+    CONNECTION_NETWORK_MAC,
+    ChildDeviceInfo,
+    DeviceInfo,
+)
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from pyetatouch import (
     Component,
@@ -20,7 +24,7 @@ from pyetatouch import (
     get_entry,
 )
 
-from .const import DOMAIN, MANUFACTURER
+from .const import DOMAIN, MANUFACTURER, MEINETA_URL
 from .coordinator import EtaConfigEntry, EtaDataCoordinator
 from .descriptions import META
 from .helpers import mode_unique_id, variable_unique_id
@@ -40,12 +44,16 @@ MODELS = {
 
 def controller_device_info(entry: ConfigEntry) -> DeviceInfo:
     """Return the device of the ETAtouch controller (parent of all function blocks)."""
-    return DeviceInfo(
+    info = DeviceInfo(
         identifiers={(DOMAIN, entry.entry_id)},
         manufacturer=MANUFACTURER,
         model="ETAtouch",
         name=entry.title,
+        configuration_url=MEINETA_URL,
     )
+    if entry.unique_id:  # the formatted MAC address, when setup or DHCP could read it
+        info["connections"] = {(CONNECTION_NETWORK_MAC, entry.unique_id)}
+    return info
 
 
 def component_device_info(

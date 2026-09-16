@@ -1,18 +1,22 @@
 """Tests for setup and unload."""
 
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from pyetatouch import EtaConnectionError
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.eta_touch.const import DOMAIN
+from custom_components.eta_touch.const import CONF_INSTALLATION, DOMAIN
 from custom_components.eta_touch.helpers import variable_unique_id
 
 from . import (
     BOILER_TEMP,
     ENABLED_BY_DEFAULT,
     HK_POWER,
+    HOST,
+    INSTALLATION,
+    MAC,
     OUTDOOR,
     TITLE,
     WW_PRIORITY,
@@ -87,6 +91,8 @@ async def test_devices(
     assert controller is not None
     assert controller.name == TITLE
     assert controller.model == "ETAtouch"
+    assert controller.configuration_url == "https://www.meineta.at"
+    assert (dr.CONNECTION_NETWORK_MAC, MAC) in controller.connections
 
     def child(fub_id: str) -> dr.ChildDeviceEntry:
         found = devices.async_get_child_device_by_identifier(
@@ -118,3 +124,18 @@ async def test_devices(
     )
     assert problem is not None
     assert problem.device_id == controller.id
+
+
+async def test_controller_without_mac(hass: HomeAssistant, mock_client: object) -> None:
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title=TITLE,
+        unique_id=None,
+        data={CONF_HOST: HOST, CONF_INSTALLATION: INSTALLATION.to_dict()},
+    )
+    await setup_integration(hass, entry)
+    controller = dr.async_get(hass).async_get_device_by_identifier(
+        (DOMAIN, entry.entry_id), entry.entry_id
+    )
+    assert controller is not None
+    assert controller.connections == set()
