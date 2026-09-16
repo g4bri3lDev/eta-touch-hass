@@ -95,7 +95,10 @@ def mock_client(varset: FakeVarSet) -> Generator[MagicMock]:
 def mock_discover() -> Generator[AsyncMock]:
     """Patch pyetatouch.discover."""
     mock = AsyncMock(return_value=INSTALLATION)
-    with patch("custom_components.eta_touch.config_flow.discover", mock):
+    with (
+        patch("custom_components.eta_touch.config_flow.discover", mock),
+        patch("custom_components.eta_touch.button.discover", mock),
+    ):
         yield mock
 
 
