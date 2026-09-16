@@ -45,6 +45,7 @@ class EtaRuntimeData:
     values: EtaDataCoordinator
     faults: EtaErrorsCoordinator
     stack: AsyncExitStack
+    controller_device_id: str
 
 
 type EtaConfigEntry = ConfigEntry[EtaRuntimeData]

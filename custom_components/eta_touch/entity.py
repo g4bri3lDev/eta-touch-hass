@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, Platform
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.device_registry import ChildDeviceInfo, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from pyetatouch import (
     Component,
@@ -46,17 +46,17 @@ def controller_device_info(entry: ConfigEntry) -> DeviceInfo:
     )
 
 
-def component_device_info(entry: ConfigEntry, component: Component) -> DeviceInfo:
-    """Return the device of a function block."""
-    model = (
+def component_device_info(
+    entry: EtaConfigEntry, component: Component
+) -> ChildDeviceInfo:
+    """Return the child device of a function block."""
+    fallback = (
         MODELS[component.type] if component.type else f"Function block {component.fub}"
     )
-    return DeviceInfo(
+    return ChildDeviceInfo(
         identifiers={(DOMAIN, f"{entry.entry_id}_{component.node}_{component.fub}")},
-        manufacturer=MANUFACTURER,
-        model=model,
-        name=component.name or model,
-        via_device=(DOMAIN, entry.entry_id),
+        parent_device_id=entry.runtime_data.controller_device_id,
+        name=component.name or fallback,
     )
 
 

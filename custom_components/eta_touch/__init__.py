@@ -77,7 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: EtaConfigEntry) -> bool:
         async_get_clientsession(hass), entry.data[CONF_HOST], entry.data[CONF_PORT]
     )
     installation = Installation.from_dict(entry.data[CONF_INSTALLATION])
-    dr.async_get(hass).async_get_or_create(
+    controller = dr.async_get(hass).async_get_or_create(
         config_entry_id=entry.entry_id, **controller_device_info(entry)
     )
     name = await varset_name(hass, entry.entry_id)
@@ -101,7 +101,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: EtaConfigEntry) -> bool:
         await _close(stack)
         raise
     entry.runtime_data = EtaRuntimeData(
-        client, installation, varset, values, faults, stack
+        client, installation, varset, values, faults, stack, controller.id
     )
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

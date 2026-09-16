@@ -4,7 +4,6 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from pyetatouch import EtaConnectionError
-import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.eta_touch.const import DOMAIN
@@ -39,7 +38,6 @@ async def test_setup_and_unload(
     assert varset.closed
 
 
-@pytest.mark.skip(reason="select platform in Task 4")
 async def test_enabled_entity_is_polled_after_reload(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
@@ -77,36 +75,30 @@ async def test_retry_when_first_refresh_fails(
     assert varset.closed
 
 
-@pytest.mark.skip(reason="switch platform in Task 4")
 async def test_devices(
     hass: HomeAssistant, config_entry: MockConfigEntry, mock_client: object
 ) -> None:
     await setup_integration(hass, config_entry)
     devices = dr.async_get(hass)
     entities = er.async_get(hass)
-    controller = devices.async_get_device({(DOMAIN, config_entry.entry_id)})
+    controller = devices.async_get_device_by_identifier(
+        (DOMAIN, config_entry.entry_id), config_entry.entry_id
+    )
     assert controller is not None
     assert controller.name == TITLE
     assert controller.model == "ETAtouch"
 
-    def device(fub_id: str) -> dr.DeviceEntry:
-        found = devices.async_get_device(
-            {(DOMAIN, f"{config_entry.entry_id}_{fub_id}")}
+    def child(fub_id: str) -> dr.ChildDeviceEntry:
+        found = devices.async_get_child_device_by_identifier(
+            (DOMAIN, f"{config_entry.entry_id}_{fub_id}"), config_entry.entry_id
         )
         assert found is not None
-        assert found.via_device_id == controller.id
+        assert found.parent_device_id == controller.id
         return found
 
-    boiler, system, hk, fwm = (
-        device("40_10021"),
-        device("120_10241"),
-        device("120_10101"),
-        device("120_10999"),
-    )
-    assert (boiler.name, boiler.model) == ("Kessel", "Boiler")
-    assert (system.name, system.model) == ("Sys", "System")
-    assert (hk.name, hk.model) == ("HK", "Heating circuit")
-    assert (fwm.name, fwm.model) == ("FWM", "Function block 10999")
+    boiler, system, hk = child("40_10021"), child("120_10241"), child("120_10101")
+    assert (boiler.name, system.name, hk.name) == ("Kessel", "Sys", "HK")
+    assert child("120_10999").name == "FWM"
 
     for platform, address, owner in (
         ("sensor", BOILER_TEMP, boiler),
