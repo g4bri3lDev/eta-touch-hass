@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.1.0...v0.1.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* name a function block's on/off switch after its device ([eaedc63](https://github.com/g4bri3lDev/eta-touch-hass/commit/eaedc632a647422edd25cb6ccf3e78457c805be3))
+
 ## 0.1.0 (2026-09-16)
 
 
