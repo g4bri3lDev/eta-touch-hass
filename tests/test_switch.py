@@ -30,3 +30,12 @@ async def test_switch(
         SWITCH_DOMAIN, SERVICE_TURN_ON, {ATTR_ENTITY_ID: entity_id}, blocking=True
     )
     mock_client.write.assert_awaited_with(HK_POWER, 1803)
+
+
+async def test_on_off_switch_is_named_after_its_device(
+    hass: HomeAssistant, config_entry: MockConfigEntry, mock_client: MagicMock
+) -> None:
+    await setup_integration(hass, config_entry)
+    entity_id = entity_id_for(hass, "switch", config_entry, HK_POWER)
+    assert entity_id == "switch.hk"
+    assert hass.states.get(entity_id).attributes["friendly_name"] == "HK"

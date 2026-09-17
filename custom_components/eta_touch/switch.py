@@ -14,6 +14,7 @@ from .coordinator import EtaConfigEntry
 from .entity import EtaEntity, variables_for_platform
 
 PARALLEL_UPDATES = 1
+MAIN_SWITCH_KEY = "power"
 
 
 async def async_setup_entry(
@@ -38,6 +39,9 @@ class EtaSwitch(EtaEntity, SwitchEntity):
         super().__init__(entry, component, variable)
         assert self.info is not None
         self._off, self._on = switch_codes(self.info)
+        if variable.key == MAIN_SWITCH_KEY:
+            # The block's on/off button is its main feature: use the device name.
+            self._attr_name = None
 
     @property
     def is_on(self) -> bool | None:

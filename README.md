@@ -65,13 +65,15 @@ Commonly used values are enabled by default; everything else is available but di
 
 | Function block | Enabled by default |
 |---|---|
-| Boiler | state, boiler/return/flue-gas temperature, target temperature, pressure, pellet container state and content, total consumption, consumption since the ash box was emptied, full-load hours, heat energy, power switch, pellet suction time |
-| Heating circuit | state, operating mode, flow temperature, **mode** (auto / heating / setback), heating-curve offset, power switch, *coming home* / *leaving home* buttons (disabled) |
-| Hot water | state, temperature, target temperature, *charge now*, power switch |
+| Boiler | state, boiler/return/flue-gas temperature, target temperature, pressure, pellet container state and content, total consumption, consumption since the ash box was emptied, full-load hours, heat energy, on/off switch, pellet suction time |
+| Heating circuit | state, operating mode, flow temperature, **mode** (auto / heating / setback), heating-curve offset, on/off switch, *coming home* / *leaving home* buttons (disabled) |
+| Hot water | state, temperature, target temperature, *charge now*, on/off switch |
 | Buffer | state, charge level, top and bottom temperature, *charge now* |
 | Solar | state, collector temperature, collector pump |
 | Pellet store | discharge state, pellet stock |
 | System | outdoor temperature |
+
+The on/off switch of a function block carries the device's name (e.g. `switch.hk`); *on* means the block is switched on, not that it is currently heating.
 
 States (e.g. *Ready*, *Charging*, *Not full*) are translated into your Home Assistant language, independent of the panel language.
 
