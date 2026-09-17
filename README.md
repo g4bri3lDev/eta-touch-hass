@@ -95,7 +95,28 @@ Numbers, switches, selects, time entities and buttons write directly to the heat
 
 ## Energy dashboard
 
-Each boiler has a **Heat energy** sensor (kWh), calculated as *total pellet consumption × calorific value*. Add it under *Settings › Dashboards › Energy* (e.g. as a gas source), and adjust the calorific value in the options if your pellets differ.
+Each boiler has a **Heat energy** sensor (kWh), calculated as *total pellet consumption × calorific value*. Home Assistant has no dedicated source type for pellet heating, so add it as a **gas source** (gas sources accept energy sensors in kWh):
+
+1. *Settings › Dashboards › Energy*
+2. Under **Gas consumption**, choose *Add gas source*.
+3. **Gas usage:** select the boiler's *Heat energy* sensor.
+4. **Name** (optional): e.g. *Pellet heating*, so the graphs don't just say "Gas".
+5. **Gas flow rate:** leave empty — it only accepts volume flow sensors (m³/h, L/min) from gas meters.
+6. **Costs** (optional): *Use a static price* per kWh (see below), or an entity that provides the price.
+
+### Price per kWh
+
+```
+price per kWh = pellet price per tonne ÷ 1000 ÷ calorific value
+```
+
+Example: 350 €/t at 4.8 kWh/kg → 350 ÷ 1000 ÷ 4.8 ≈ **0.073 €/kWh**.
+
+### Good to know
+
+- The dashboard starts counting when the source is added (from the next full hour); past consumption is not imported.
+- Set the **calorific value** (*Configure* on the integration, default 4.8 kWh/kg) to the value on your delivery note *before* adding the source — changing it later causes a one-time jump in the statistics.
+- The sensor shows the energy contained in the burned pellets. The heat actually delivered is lower by the boiler efficiency (typically 90–95 %).
 
 ## Error events
 
