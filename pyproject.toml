@@ -11,11 +11,27 @@ dependencies = ["pyetatouch==0.1.0", "getmac==0.9.5"]
 dev = [
     "pytest-homeassistant-custom-component==0.13.365",
     "ruff==0.15.17",
+    "mypy==1.18.2",
 ]
 
 [tool.uv]
 package = false
 
+
+[tool.mypy]
+# Strict typing for the integration itself, like Home Assistant core requires.
+# Tests are excluded: pytest-homeassistant-custom-component ships no type information.
+strict = true
+files = ["custom_components", "scripts"]
+disallow_any_generics = true
+warn_unreachable = true
+explicit_package_bases = true
+namespace_packages = true
+mypy_path = "."
+
+[[tool.mypy.overrides]]
+module = ["getmac.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
