@@ -9,14 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from pyetatouch import (
-    EtaClient,
-    EtaError,
-    Installation,
-    VarAddress,
-    enabled_by_default,
-    get_entry,
-)
+from pyetatouch import EtaClient, EtaError, Installation
 
 from .const import CONF_INSTALLATION, DOMAIN
 from .coordinator import (
@@ -25,7 +18,7 @@ from .coordinator import (
     EtaErrorsCoordinator,
     EtaRuntimeData,
 )
-from .entity import controller_device_info, expected_unique_ids, representing_unique_ids
+from .entity import controller_device_info, expected_unique_ids, polled_addresses
 from .helpers import varset_name
 
 PLATFORMS = [
@@ -39,35 +32,6 @@ PLATFORMS = [
 ]
 
 
-def _enabled_addresses(
-    hass: HomeAssistant, entry: EtaConfigEntry, installation: Installation
-) -> list[VarAddress]:
-    registry = er.async_get(hass)
-    known = {
-        registry_entry.unique_id: registry_entry
-        for registry_entry in er.async_entries_for_config_entry(
-            registry, entry.entry_id
-        )
-    }
-    addresses: list[VarAddress] = []
-    for component in installation.components:
-        for variable in installation.variables_for(component):
-            unique_ids = representing_unique_ids(entry.entry_id, component, variable)
-            catalog_entry = get_entry(variable.key)
-            if not unique_ids or catalog_entry is None:
-                continue
-            default = enabled_by_default(catalog_entry, component.type)
-            enabled = any(
-                registry_entry.disabled_by is None
-                if (registry_entry := known.get(unique_id)) is not None
-                else default
-                for unique_id in unique_ids
-            )
-            if enabled:
-                addresses.append(variable.address)
-    return addresses
-
-
 def _remove_stale_entities(
     hass: HomeAssistant, entry: EtaConfigEntry, installation: Installation
 ) -> None:
@@ -79,6 +43,26 @@ def _remove_stale_entities(
             registry.async_remove(registry_entry.entity_id)
 
 
+def _remove_stale_devices(
+    hass: HomeAssistant,
+    entry: EtaConfigEntry,
+    controller_id: str,
+    installation: Installation,
+) -> None:
+    """Remove child devices of function blocks the heater no longer reports."""
+    registry = dr.async_get(hass)
+    expected = {
+        f"{entry.entry_id}_{component.node}_{component.fub}"
+        for component in installation.components
+    }
+    for device in dr.async_entries_for_parent_device(registry, controller_id):
+        identifiers = {
+            identifier for domain, identifier in device.identifiers if domain == DOMAIN
+        }
+        if not identifiers & expected:
+            registry.async_remove_device(device.id)
+
+
 async def _close(stack: AsyncExitStack) -> None:
     with suppress(EtaError):
         await stack.aclose()
@@ -88,15 +72,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: EtaConfigEntry) -> bool:
     """Set up ETA touch from a config entry."""
     client = EtaClient(async_get_clientsession(hass), entry.data[CONF_HOST])
     installation = Installation.from_dict(entry.data[CONF_INSTALLATION])
-    _remove_stale_entities(hass, entry, installation)
     controller = dr.async_get(hass).async_get_or_create(
         config_entry_id=entry.entry_id, **controller_device_info(entry)
     )
+    _remove_stale_entities(hass, entry, installation)
+    _remove_stale_devices(hass, entry, controller.id, installation)
     name = await varset_name(hass, entry.entry_id)
     stack = AsyncExitStack()
     try:
         varset = await stack.enter_async_context(
-            client.varset(name, _enabled_addresses(hass, entry, installation))
+            client.varset(name, polled_addresses(installation))
         )
         values = EtaDataCoordinator(hass, entry, varset)
         faults = EtaErrorsCoordinator(hass, entry, client)

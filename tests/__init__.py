@@ -44,22 +44,6 @@ STATES = {4000: "Ausgeschaltet", 4001: "Bereit"}
 ON_OFF = {1802: "Aus", 1803: "Ein"}
 PRIORITIES = {1971: "Niedrig", 1972: "Mittel", 1973: "Hoch"}
 
-ENABLED_BY_DEFAULT = {
-    BOILER_TEMP,
-    BOILER_STATE,
-    TOTAL,
-    HOURS,
-    OUTDOOR,
-    HK_POWER,
-    HK_OFFSET,
-    WW_TARGET,
-    WW_TEMP,
-    HK_AUTO,
-    HK_HEAT,
-    HK_SETBACK,
-    SUCTION_TIME,
-}
-
 
 def info(
     address: VarAddress,
@@ -261,3 +245,11 @@ async def enable_entity(
     await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     return entity_id
+
+
+# every matched variable is polled; actions (buttons) have no value
+POLLED = {
+    variable.address
+    for variable in INSTALLATION.variables
+    if variable.key not in ("come_button",)
+}

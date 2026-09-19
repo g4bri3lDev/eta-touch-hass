@@ -107,19 +107,19 @@ def energy_unique_id(entry_id: str, component: Component) -> str:
     return f"{entry_id}_{component.node}_{component.fub}_energy"
 
 
-def representing_unique_ids(
-    entry_id: str, component: Component, variable: MatchedVariable
-) -> list[str]:
-    """Return the unique IDs of the entities that need a variable's value."""
-    catalog_entry = get_entry(variable.key)
-    if catalog_entry is None or catalog_entry.kind is Kind.ACTION:
-        return []
-    if catalog_entry.kind is Kind.MODE:
-        return [mode_unique_id(entry_id, component.node, component.fub)]
-    unique_ids = [variable_unique_id(entry_id, variable.address)]
-    if variable.key == ENERGY_SOURCE_KEY:
-        unique_ids.append(energy_unique_id(entry_id, component))
-    return unique_ids
+def polled_addresses(installation: Installation) -> list[VarAddress]:
+    """Return the addresses whose values entities need.
+
+    Everything the catalog matched is polled: reading a variable set is a single
+    request regardless of its size. Only actions (buttons) have no value.
+    """
+    return [
+        variable.address
+        for component in installation.components
+        for variable in installation.variables_for(component)
+        if (catalog_entry := get_entry(variable.key)) is not None
+        and catalog_entry.kind is not Kind.ACTION
+    ]
 
 
 async def async_write(

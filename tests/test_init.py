@@ -1,10 +1,12 @@
 """Tests for setup and unload."""
 
+from unittest.mock import AsyncMock
+
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from pyetatouch import EtaConnectionError
+from pyetatouch import EtaConnectionError, Installation
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.eta_touch.const import CONF_INSTALLATION, DOMAIN
@@ -12,16 +14,18 @@ from custom_components.eta_touch.helpers import variable_unique_id
 
 from . import (
     BOILER_TEMP,
-    ENABLED_BY_DEFAULT,
+    COMPONENTS,
     HK_AUTO,
+    HK_COME,
+    HK_OUTDOOR,
     HK_POWER,
     HOST,
     INSTALLATION,
     MAC,
     OUTDOOR,
+    POLLED,
     TITLE,
     WW_PRIORITY,
-    enable_entity,
     entity_id_for,
     setup_integration,
 )
@@ -36,23 +40,25 @@ async def test_setup_and_unload(
 ) -> None:
     await setup_integration(hass, config_entry)
     assert config_entry.state is ConfigEntryState.LOADED
-    assert set(varset.addresses) == ENABLED_BY_DEFAULT
+    assert set(varset.addresses) == POLLED
     assert varset.name.startswith("ha")
     assert len(varset.name) == 12
     assert await hass.config_entries.async_unload(config_entry.entry_id)
     assert varset.closed
 
 
-async def test_enabled_entity_is_polled_after_reload(
+async def test_all_matched_variables_are_polled(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     mock_client: object,
     varset: FakeVarSet,
 ) -> None:
     await setup_integration(hass, config_entry)
-    assert WW_PRIORITY not in varset.addresses
-    await enable_entity(hass, "select", config_entry, WW_PRIORITY)
+    # disabled-by-default entities are polled too, so enabling one needs no extra request
     assert WW_PRIORITY in varset.addresses
+    assert HK_OUTDOOR in varset.addresses
+    # actions (buttons) have no value to poll
+    assert HK_COME not in varset.addresses
 
 
 async def test_retry_when_varset_cannot_be_created(
@@ -177,3 +183,42 @@ async def test_stale_entities_are_removed(
             e.unique_id == f"{config_entry.entry_id}_{suffix}"
             for e in er.async_entries_for_config_entry(registry, config_entry.entry_id)
         ), suffix
+
+
+async def test_stale_devices_are_removed(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_client: object,
+    mock_discover: AsyncMock,
+) -> None:
+    await setup_integration(hass, config_entry)
+    devices = dr.async_get(hass)
+    controller = devices.async_get_device_by_identifier(
+        (DOMAIN, config_entry.entry_id), config_entry.entry_id
+    )
+    assert controller is not None
+    assert len(dr.async_entries_for_parent_device(devices, controller.id)) == len(
+        COMPONENTS
+    )
+
+    # the heater no longer reports the hot water block
+    smaller = Installation(
+        tuple(c for c in COMPONENTS if c.fub != 10111),
+        tuple(v for v in INSTALLATION.variables if v.address.fub != 10111),
+    )
+    hass.config_entries.async_update_entry(
+        config_entry, data={**config_entry.data, CONF_INSTALLATION: smaller.to_dict()}
+    )
+    await hass.config_entries.async_reload(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert (
+        devices.async_get_child_device_by_identifier(
+            (DOMAIN, f"{config_entry.entry_id}_120_10111"), config_entry.entry_id
+        )
+        is None
+    )
+    assert (
+        len(dr.async_entries_for_parent_device(devices, controller.id))
+        == len(COMPONENTS) - 1
+    )
