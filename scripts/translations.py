@@ -247,6 +247,54 @@ TEXTS: dict[str, tuple[str, str]] = {
 }
 
 
+# pyetatouch state key -> icon, used for entities whose state is an option
+STATE_ICONS: dict[str, str] = {
+    "off": "mdi:power-off",
+    "on": "mdi:power-on",
+    "ready": "mdi:check-circle-outline",
+    "starting": "mdi:fire-alert",
+    "heating": "mdi:fire",
+    "setback": "mdi:weather-night",
+    "running": "mdi:play-circle-outline",
+    "charging": "mdi:storage-tank",
+    "charged": "mdi:check-circle",
+    "full": "mdi:check-circle",
+    "not_full": "mdi:silo-outline",
+    "demand": "mdi:progress-question",
+    "suction": "mdi:fan",
+    "conveying": "mdi:screw-lag",
+    "discharge_overrun": "mdi:screw-lag",
+    "turbine_overrun": "mdi:fan",
+    "overrun_standby": "mdi:timer-sand",
+    "standby_boiler": "mdi:timer-sand",
+    "standby_discharge": "mdi:timer-sand",
+    "discharge_error": "mdi:alert",
+    "suction_time_exceeded": "mdi:alert",
+    "deashing": "mdi:delete-variant",
+    "changing_position": "mdi:swap-horizontal",
+    "flushing": "mdi:water-sync",
+    "shutting_down": "mdi:stop-circle-outline",
+    "ember_burnout": "mdi:fire-off",
+    "ember_burnout_locked": "mdi:fire-off",
+    "pellet_mode": "mdi:silo",
+    "switching_to_log_wood": "mdi:pine-tree",
+    "fault": "mdi:alert",
+    "error": "mdi:alert",
+    "ok": "mdi:check-circle-outline",
+    "locked": "mdi:lock",
+    "fuse_defective": "mdi:fuse-alert",
+    "no_terminal": "mdi:connection",
+    "terminal_unavailable": "mdi:connection",
+    "yes": "mdi:check",
+    "no": "mdi:close",
+    "vacation": "mdi:bag-suitcase",
+    "screed_drying": "mdi:heat-wave",
+    "low": "mdi:chevron-down",
+    "medium": "mdi:chevron-up",
+    "high": "mdi:chevron-double-up",
+    "auto": "mdi:autorenew",
+}
+
 # catalog key -> icon (only where the device class does not already provide one)
 ICONS: dict[str, str] = {
     "boiler_state": "mdi:fire",
@@ -415,18 +463,32 @@ def build(lang: int) -> dict[str, Any]:
     return tree
 
 
+# entities whose state is an option and that get state-dependent icons
+STATE_ICON_KINDS = (Kind.STATE, Kind.SELECT)
+
+
 def build_icons() -> dict[str, Any]:
     """Build the icon translations."""
     entity: dict[str, Any] = {}
+    states = {
+        key: icon
+        for key, icon in STATE_ICONS.items()
+        if key in set(STATE_KEYS.values())
+    }
     for entry in CATALOG:
         if (icon := ICONS.get(entry.key)) is None:
             continue
-        entity.setdefault("sensor", {})[entry.key] = {"default": icon}
+        item: dict[str, Any] = {"default": icon}
+        if entry.kind in STATE_ICON_KINDS:
+            item["state"] = states
+        entity.setdefault("sensor", {})[entry.key] = item
         if platform := PLATFORM_FOR_KIND.get(entry.kind):
-            entity.setdefault(platform, {})[entry.key] = {"default": icon}
+            entity.setdefault(platform, {})[entry.key] = dict(item)
     for platform, icons in FIXED_ICONS.items():
         for key, icon in icons.items():
             entity.setdefault(platform, {})[key] = {"default": icon}
+    mode = entity["select"]["mode"]
+    mode["state"] = {key: STATE_ICONS[key] for key in MODE_STATES}
     return {"entity": entity}
 
 

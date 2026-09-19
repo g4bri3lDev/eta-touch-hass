@@ -68,3 +68,19 @@ def test_icons_use_known_keys() -> None:
         for key, icon in entries.items():
             assert key in keys, f"{platform}.{key}"
             assert icon["default"].startswith("mdi:"), f"{platform}.{key}"
+            for state, state_icon in icon.get("state", {}).items():
+                # "auto" is the mode select's own option, not a heater state
+                assert state in set(STATE_KEYS.values()) | {"auto"}, (
+                    f"{platform}.{key}.{state}"
+                )
+                assert state_icon.startswith("mdi:"), f"{platform}.{key}.{state}"
+
+
+def test_option_entities_have_state_icons() -> None:
+    icons = _load("icons.json")["entity"]
+    for entry in CATALOG:
+        if entry.kind in (Kind.STATE, Kind.SELECT) and entry.key in icons["sensor"]:
+            assert set(icons["sensor"][entry.key]["state"]) == set(
+                STATE_KEYS.values()
+            ), entry.key
+    assert set(icons["select"]["mode"]["state"]) == {"auto", "heating", "setback"}
