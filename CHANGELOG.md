@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.1.1...v0.2.0) (2026-09-19)
+
+
+### Features
+
+* add icon translations ([d6dc6d2](https://github.com/g4bri3lDev/eta-touch-hass/commit/d6dc6d2f767c042d30fba5f90e1e655088c73e12))
+
 ## [0.1.1](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.1.0...v0.1.1) (2026-09-17)
 
 
