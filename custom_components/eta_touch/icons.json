@@ -16,7 +16,7 @@
     },
     "number": {
       "curve_offset": {
-        "default": "mdi:tune-variant"
+        "default": "mdi:tune-vertical-variant"
       },
       "empty_ash_box_after": {
         "default": "mdi:delete-clock-outline"
@@ -280,7 +280,7 @@
         "default": "mdi:sack"
       },
       "curve_offset": {
-        "default": "mdi:tune-variant"
+        "default": "mdi:tune-vertical-variant"
       },
       "discharge_screw": {
         "default": "mdi:screw-lag"
@@ -517,7 +517,7 @@
         "default": "mdi:counter"
       },
       "hot_water_charge_now": {
-        "default": "mdi:water-boiler-alert"
+        "default": "mdi:water-plus"
       },
       "hot_water_charging_pump": {
         "default": "mdi:pump",
@@ -616,7 +616,7 @@
         }
       },
       "ignition": {
-        "default": "mdi:fire-alert",
+        "default": "mdi:flash",
         "state": {
           "changing_position": "mdi:swap-horizontal",
           "charged": "mdi:check-circle",
@@ -951,7 +951,7 @@
         "default": "mdi:storage-tank-outline"
       },
       "hot_water_charge_now": {
-        "default": "mdi:water-boiler-alert"
+        "default": "mdi:water-plus"
       }
     },
     "time": {
