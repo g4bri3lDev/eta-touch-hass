@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.3.0...v0.3.1) (2026-09-19)
+
+
+### Bug Fixes
+
+* avoid alert icons for normal states and distinguish the curve offset ([b46c477](https://github.com/g4bri3lDev/eta-touch-hass/commit/b46c4771ae9946809cfb57895789a75be53dcd81))
+* use a clearer icon for the heating circuit mode ([4ed80a9](https://github.com/g4bri3lDev/eta-touch-hass/commit/4ed80a96ba1faa6379a7fe9e5ec1ec6fe8aa362e))
+
 ## [0.3.0](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.2.0...v0.3.0) (2026-09-19)
 
 
