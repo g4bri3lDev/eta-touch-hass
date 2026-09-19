@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.2.0...v0.3.0) (2026-09-19)
+
+
+### Features
+
+* add state-dependent icons for option entities ([f3b2a62](https://github.com/g4bri3lDev/eta-touch-hass/commit/f3b2a6204b558b645fb486e58cbc1d8504aeae7f))
+
+
+### Bug Fixes
+
+* use clearer icons for ignition, de-ashing, suction and priority ([3e902e5](https://github.com/g4bri3lDev/eta-touch-hass/commit/3e902e568827354da3401db520599354708c1ffe))
+
 ## [0.2.0](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.1.1...v0.2.0) (2026-09-19)
 
 
