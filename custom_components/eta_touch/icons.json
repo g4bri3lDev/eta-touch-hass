@@ -1,0 +1,244 @@
+{
+  "entity": {
+    "button": {
+      "come_button": {
+        "default": "mdi:home-import-outline"
+      },
+      "fill_pellet_container": {
+        "default": "mdi:silo"
+      },
+      "go_button": {
+        "default": "mdi:home-export-outline"
+      },
+      "rediscover": {
+        "default": "mdi:refresh"
+      }
+    },
+    "number": {
+      "curve_offset": {
+        "default": "mdi:tune-variant"
+      },
+      "empty_ash_box_after": {
+        "default": "mdi:delete-clock-outline"
+      },
+      "flow_at_minus_10": {
+        "default": "mdi:snowflake-thermometer"
+      },
+      "flow_at_plus_10": {
+        "default": "mdi:sun-thermometer-outline"
+      },
+      "heating_limit_day": {
+        "default": "mdi:thermometer-chevron-up"
+      },
+      "heating_limit_night": {
+        "default": "mdi:thermometer-chevron-down"
+      },
+      "pellet_stock_warning_limit": {
+        "default": "mdi:silo-outline"
+      },
+      "quiet_time_duration": {
+        "default": "mdi:timer-sand"
+      },
+      "setback_reduction": {
+        "default": "mdi:weather-night"
+      },
+      "switch_on_difference": {
+        "default": "mdi:delta"
+      }
+    },
+    "select": {
+      "mode": {
+        "default": "mdi:sun-snowflake-variant"
+      },
+      "priority": {
+        "default": "mdi:sort-variant"
+      }
+    },
+    "sensor": {
+      "anti_seize_time": {
+        "default": "mdi:clock-outline"
+      },
+      "ash_box": {
+        "default": "mdi:delete-variant"
+      },
+      "auto_button": {
+        "default": "mdi:autorenew"
+      },
+      "boiler_pump": {
+        "default": "mdi:pump"
+      },
+      "boiler_state": {
+        "default": "mdi:fire"
+      },
+      "buffer_charge_count": {
+        "default": "mdi:counter"
+      },
+      "buffer_charge_level": {
+        "default": "mdi:gauge"
+      },
+      "buffer_charge_now": {
+        "default": "mdi:storage-tank-outline"
+      },
+      "buffer_state": {
+        "default": "mdi:storage-tank"
+      },
+      "collector_pump": {
+        "default": "mdi:pump"
+      },
+      "come_button": {
+        "default": "mdi:home-import-outline"
+      },
+      "consumption_since_ash_box_emptied": {
+        "default": "mdi:sack"
+      },
+      "consumption_since_deashing": {
+        "default": "mdi:sack"
+      },
+      "curve_offset": {
+        "default": "mdi:tune-variant"
+      },
+      "discharge_screw": {
+        "default": "mdi:screw-lag"
+      },
+      "discharge_state": {
+        "default": "mdi:screw-lag"
+      },
+      "empty_ash_box_after": {
+        "default": "mdi:delete-clock-outline"
+      },
+      "fault_status": {
+        "default": "mdi:alert-circle-outline"
+      },
+      "fill_pellet_container": {
+        "default": "mdi:silo"
+      },
+      "flow_at_minus_10": {
+        "default": "mdi:snowflake-thermometer"
+      },
+      "flow_at_plus_10": {
+        "default": "mdi:sun-thermometer-outline"
+      },
+      "flue_gas_fan_speed": {
+        "default": "mdi:fan"
+      },
+      "full_load_hours": {
+        "default": "mdi:timer-outline"
+      },
+      "full_load_hours_since_cleaning": {
+        "default": "mdi:timer-refresh-outline"
+      },
+      "full_load_hours_since_service": {
+        "default": "mdi:timer-cog-outline"
+      },
+      "go_button": {
+        "default": "mdi:home-export-outline"
+      },
+      "heat_button": {
+        "default": "mdi:radiator"
+      },
+      "heating_circuit_pump": {
+        "default": "mdi:pump"
+      },
+      "heating_circuit_state": {
+        "default": "mdi:radiator"
+      },
+      "heating_limit_day": {
+        "default": "mdi:thermometer-chevron-up"
+      },
+      "heating_limit_night": {
+        "default": "mdi:thermometer-chevron-down"
+      },
+      "heating_run_count": {
+        "default": "mdi:counter"
+      },
+      "hot_water_charge_now": {
+        "default": "mdi:water-boiler-alert"
+      },
+      "hot_water_charging_pump": {
+        "default": "mdi:pump"
+      },
+      "hot_water_state": {
+        "default": "mdi:water-boiler"
+      },
+      "ignition": {
+        "default": "mdi:fire-alert"
+      },
+      "ignition_count": {
+        "default": "mdi:counter"
+      },
+      "latest_error": {
+        "default": "mdi:alert-circle-outline"
+      },
+      "operating_mode": {
+        "default": "mdi:sun-snowflake-variant"
+      },
+      "pellet_container": {
+        "default": "mdi:silo"
+      },
+      "pellet_container_content": {
+        "default": "mdi:silo"
+      },
+      "pellet_stock": {
+        "default": "mdi:silo"
+      },
+      "pellet_stock_warning_limit": {
+        "default": "mdi:silo-outline"
+      },
+      "pellet_suction_time": {
+        "default": "mdi:clock-outline"
+      },
+      "priority": {
+        "default": "mdi:sort-variant"
+      },
+      "quiet_time_duration": {
+        "default": "mdi:timer-sand"
+      },
+      "quiet_time_start": {
+        "default": "mdi:volume-off"
+      },
+      "residual_oxygen": {
+        "default": "mdi:molecule"
+      },
+      "setback_button": {
+        "default": "mdi:weather-night"
+      },
+      "setback_reduction": {
+        "default": "mdi:weather-night"
+      },
+      "solar_state": {
+        "default": "mdi:solar-power-variant"
+      },
+      "stoker_screw": {
+        "default": "mdi:screw-lag"
+      },
+      "suction_turbine": {
+        "default": "mdi:fan"
+      },
+      "switch_on_difference": {
+        "default": "mdi:delta"
+      },
+      "total_consumption": {
+        "default": "mdi:sack"
+      }
+    },
+    "switch": {
+      "buffer_charge_now": {
+        "default": "mdi:storage-tank-outline"
+      },
+      "hot_water_charge_now": {
+        "default": "mdi:water-boiler-alert"
+      }
+    },
+    "time": {
+      "anti_seize_time": {
+        "default": "mdi:clock-outline"
+      },
+      "pellet_suction_time": {
+        "default": "mdi:clock-outline"
+      },
+      "quiet_time_start": {
+        "default": "mdi:volume-off"
+      }
+    }
+  }
+}

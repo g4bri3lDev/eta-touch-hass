@@ -246,6 +246,72 @@ TEXTS: dict[str, tuple[str, str]] = {
     ),
 }
 
+
+# catalog key -> icon (only where the device class does not already provide one)
+ICONS: dict[str, str] = {
+    "boiler_state": "mdi:fire",
+    "discharge_state": "mdi:screw-lag",
+    "heating_circuit_state": "mdi:radiator",
+    "hot_water_state": "mdi:water-boiler",
+    "buffer_state": "mdi:storage-tank",
+    "solar_state": "mdi:solar-power-variant",
+    "operating_mode": "mdi:sun-snowflake-variant",
+    "fault_status": "mdi:alert-circle-outline",
+    "pellet_container": "mdi:silo",
+    "ignition": "mdi:fire-alert",
+    "suction_turbine": "mdi:fan",
+    "ash_box": "mdi:delete-variant",
+    "heating_circuit_pump": "mdi:pump",
+    "hot_water_charging_pump": "mdi:pump",
+    "boiler_pump": "mdi:pump",
+    "collector_pump": "mdi:pump",
+    "discharge_screw": "mdi:screw-lag",
+    "stoker_screw": "mdi:screw-lag",
+    "flue_gas_fan_speed": "mdi:fan",
+    "residual_oxygen": "mdi:molecule",
+    "pellet_stock": "mdi:silo",
+    "pellet_stock_warning_limit": "mdi:silo-outline",
+    "pellet_container_content": "mdi:silo",
+    "total_consumption": "mdi:sack",
+    "consumption_since_ash_box_emptied": "mdi:sack",
+    "consumption_since_deashing": "mdi:sack",
+    "empty_ash_box_after": "mdi:delete-clock-outline",
+    "full_load_hours": "mdi:timer-outline",
+    "full_load_hours_since_service": "mdi:timer-cog-outline",
+    "full_load_hours_since_cleaning": "mdi:timer-refresh-outline",
+    "ignition_count": "mdi:counter",
+    "heating_run_count": "mdi:counter",
+    "buffer_charge_count": "mdi:counter",
+    "buffer_charge_level": "mdi:gauge",
+    "curve_offset": "mdi:tune-variant",
+    "flow_at_minus_10": "mdi:snowflake-thermometer",
+    "flow_at_plus_10": "mdi:sun-thermometer-outline",
+    "setback_reduction": "mdi:weather-night",
+    "heating_limit_day": "mdi:thermometer-chevron-up",
+    "heating_limit_night": "mdi:thermometer-chevron-down",
+    "switch_on_difference": "mdi:delta",
+    "priority": "mdi:sort-variant",
+    "hot_water_charge_now": "mdi:water-boiler-alert",
+    "buffer_charge_now": "mdi:storage-tank-outline",
+    "fill_pellet_container": "mdi:silo",
+    "heat_button": "mdi:radiator",
+    "auto_button": "mdi:autorenew",
+    "setback_button": "mdi:weather-night",
+    "come_button": "mdi:home-import-outline",
+    "go_button": "mdi:home-export-outline",
+    "pellet_suction_time": "mdi:clock-outline",
+    "quiet_time_start": "mdi:volume-off",
+    "quiet_time_duration": "mdi:timer-sand",
+    "anti_seize_time": "mdi:clock-outline",
+}
+
+# platform -> key -> icon for the integration's own entities
+FIXED_ICONS: dict[str, dict[str, str]] = {
+    "sensor": {"latest_error": "mdi:alert-circle-outline"},
+    "button": {"rediscover": "mdi:refresh"},
+    "select": {"mode": "mdi:sun-snowflake-variant"},
+}
+
 PLATFORM_FOR_KIND = {
     Kind.SETTING: "number",
     Kind.SWITCH: "switch",
@@ -349,6 +415,21 @@ def build(lang: int) -> dict[str, Any]:
     return tree
 
 
+def build_icons() -> dict[str, Any]:
+    """Build the icon translations."""
+    entity: dict[str, Any] = {}
+    for entry in CATALOG:
+        if (icon := ICONS.get(entry.key)) is None:
+            continue
+        entity.setdefault("sensor", {})[entry.key] = {"default": icon}
+        if platform := PLATFORM_FOR_KIND.get(entry.kind):
+            entity.setdefault(platform, {})[entry.key] = {"default": icon}
+    for platform, icons in FIXED_ICONS.items():
+        for key, icon in icons.items():
+            entity.setdefault(platform, {})[key] = {"default": icon}
+    return {"entity": entity}
+
+
 def main() -> None:
     """Write the files."""
     en, de = build(0), build(1)
@@ -357,6 +438,7 @@ def main() -> None:
         (ROOT / "strings.json", en),
         (ROOT / "translations" / "en.json", en),
         (ROOT / "translations" / "de.json", de),
+        (ROOT / "icons.json", build_icons()),
     ):
         path.write_text(
             json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n",

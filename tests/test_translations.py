@@ -59,3 +59,12 @@ def test_catalog_keys_are_covered() -> None:
             assert set(STATE_KEYS.values()) <= set(
                 entity["select"][entry.key]["state"]
             ), entry.key
+
+
+def test_icons_use_known_keys() -> None:
+    icons = _load("icons.json")["entity"]
+    keys = {entry.key for entry in CATALOG} | {"latest_error", "rediscover", "mode"}
+    for platform, entries in icons.items():
+        for key, icon in entries.items():
+            assert key in keys, f"{platform}.{key}"
+            assert icon["default"].startswith("mdi:"), f"{platform}.{key}"
