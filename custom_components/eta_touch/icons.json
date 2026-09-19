@@ -48,7 +48,7 @@
     },
     "select": {
       "mode": {
-        "default": "mdi:sun-snowflake-variant",
+        "default": "mdi:tune-variant",
         "state": {
           "auto": "mdi:autorenew",
           "heating": "mdi:fire",

@@ -357,7 +357,7 @@ ICONS: dict[str, str] = {
 FIXED_ICONS: dict[str, dict[str, str]] = {
     "sensor": {"latest_error": "mdi:alert-circle-outline"},
     "button": {"rediscover": "mdi:refresh"},
-    "select": {"mode": "mdi:sun-snowflake-variant"},
+    "select": {"mode": "mdi:tune-variant"},
 }
 
 PLATFORM_FOR_KIND = {
