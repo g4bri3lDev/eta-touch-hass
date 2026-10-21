@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.3.1...v0.3.2) (2026-10-21)
+
+
+### Bug Fixes
+
+* require getmac as a minimum version instead of pinning it ([682e7de](https://github.com/g4bri3lDev/eta-touch-hass/commit/682e7deede2f3cf9c108a8367579c7983b5444ac))
+
 ## [0.3.1](https://github.com/g4bri3lDev/eta-touch-hass/compare/v0.3.0...v0.3.1) (2026-09-19)
 
 
