@@ -14,7 +14,7 @@ Local Home Assistant integration for **ETA pellet and wood boilers** with an **E
 - **Local only:** talks directly to the panel in your network; no cloud.
 
 > [!NOTE]
-> This is an early release (0.x). Values are matched against a catalog that has so far been verified on an ETA PC 25. Other models and function blocks work, but may expose fewer values — see [Missing a value?](#missing-a-value)
+> This is an early release (0.x). Values are matched against a catalog that has so far been verified on an ETA PC 25. Other models and function blocks work, but may expose fewer values — see [Compatibility](#compatibility).
 
 ## Requirements
 
@@ -25,6 +25,31 @@ Local Home Assistant integration for **ETA pellet and wood boilers** with an **E
   2. On the touch panel, open *System settings › Internet & interfaces* and enable the web service.
 
 The web service always listens on port 8080 in your local network.
+
+## Compatibility
+
+The integration reads the function blocks from the panel itself, so it sets up any ETAtouch installation. Which values become entities depends on the [pyetatouch](https://github.com/g4bri3lDev/pyetatouch) catalog: values it doesn't recognise are skipped, and an unknown function block still appears as a device, just with fewer entities.
+
+**Verified** on an ETA PC 25 with these function blocks:
+
+- Boiler
+- Pellet store
+- Heating circuit (×2)
+- Hot water tank
+- Solar
+- Buffer (PufferFlex)
+- System
+
+**Expected to work, but unverified** — the other function blocks of the ETAtouch software (x.64.0):
+
+- **Boilers:** ePE, ePE-BW, ePE-K, PelletsUnit, PelletsCompact 33–105, eSH, SH / wood-log boilers, TWIN, eTWIN, eHACK, moving-grate boilers
+- **Boiler add-ons:** condensing heat exchanger, particle separator, external ash removal
+- **Fuel supply:** pellet store with switching unit, agitator, special and third-party extraction
+- **Heat distribution:** single-room heating circuit, room, pool, fresh water module, system separation module, transfer module
+- **External:** district heating line, district heating, external heat source, external heat request, oil/gas burner
+- **Metering:** counter
+
+If you run one of these, a dump helps verify it — see [Missing a value?](#missing-a-value)
 
 ## Installation
 
